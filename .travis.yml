@@ -1,0 +1,16 @@
+language: python
+
+python:
+    - 3.7
+
+install:
+    - pip install coveralls
+    - pip install mecab-python3
+
+script:
+    - coverage run --parallel-mode --rcfile=.coveragerc setup.py test
+#    - coverage run --parallel-mode --rcfile=.coveragerc example/momotaro.py -osdi --forcemecab
+
+after_success:
+    - coverage combine
+    - coveralls

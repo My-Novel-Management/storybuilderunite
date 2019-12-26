@@ -3,6 +3,7 @@ import sys
 
 sys.path.append('./builder')
 sys.path.append('./tests')
+sys.path.append('./utils')
 
 from builder import __DESC__, __TITLE__, __VERSION__
 

@@ -7,11 +7,10 @@ import unittest
 from testutils import printTestTitle, validatedTestingWithFail
 ## local files
 from builder.chapter import Chapter
-from builder.episode import Episode
 from builder.story import Story
 
 
-_FILENAME = "chapter.py"
+_FILENAME = "story.py"
 
 
 class StoryTest(unittest.TestCase):
@@ -24,16 +23,12 @@ class StoryTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("src", "note")
+        attrs = ("chapters", "note")
         ch1 = Chapter("melon")
         ch2 = Chapter("lemon")
-        ep1 = Episode("apple")
-        ep2 = Episode("orange")
         data = [
                 (False, "test", (ch1, ch2), "a test",
                     ((ch1, ch2), "a test")),
-                (False, "test", (ep1, ep2), "a test",
-                    ((ep1, ep2), "a test")),
                 ]
         def _checkcode(title, vals, note, expects):
             tmp = Story(title, *vals, note=note)

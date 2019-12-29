@@ -6,6 +6,7 @@ import unittest
 ## local files (test utils)
 from testutils import printTestTitle, validatedTestingWithFail
 ## local files
+from tests import __BASE_ID__
 from builder.basedata import BaseData
 
 
@@ -25,7 +26,7 @@ class BaseDataTest(unittest.TestCase):
         attrs = ("name", "data", "dataId")
         data = [
                 (False, ("test",("a",)),
-                    ("test", ("a",), 1)),
+                    ("test", ("a",), __BASE_ID__ - 12)),
                 ]
         def _checkcode(vals, expects):
             tmp = BaseData(*vals)

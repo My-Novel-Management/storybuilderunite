@@ -22,10 +22,10 @@ class ShotTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("infos",)
+        attrs = ("infos", "isTerm")
         data = [
                 (False, "a test",
-                    (("a test",),)),
+                    (("a test",), False)),
                 ]
         def _checkcode(info, expects):
             tmp = Shot(info)

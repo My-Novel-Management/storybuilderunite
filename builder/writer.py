@@ -5,6 +5,7 @@
 from __future__ import annotations
 ## local libs
 from utils import assertion
+from utils.util_str import isAlphabetsOnly
 ## local files
 from builder import ActType, TagType
 from builder.action import Action
@@ -12,6 +13,7 @@ from builder.baseactor import BaseActor
 from builder.day import Day
 from builder.item import Item
 from builder.person import Person
+from builder.shot import Shot
 from builder.stage import Stage
 from builder.time import Time
 from builder.who import Who
@@ -24,9 +26,9 @@ AllDataType = (Day, Item, Person, Stage, Time, Who)
 class Writer(BaseActor):
     """The actor class for writing
     """
-    def __init__(self, roll: AllDataType,
+    def __init__(self, src: AllDataType,
             ):
-        super().__init__(assertion.isInstance(roll, AllDataType))
+        super().__init__(assertion.isInstance(src, AllDataType))
 
     @classmethod
     def getWho(cls) -> Writer:
@@ -34,48 +36,77 @@ class Writer(BaseActor):
 
     ## act
     def be(self, *args, **kwargs) -> Action:
-        return Action(*args, act_type=ActType.BE, **kwargs)
+        return Action(self._doingIf(args, "be"),
+                *args, subject=self.src, act_type=ActType.BE, **kwargs)
 
     def come(self, *args, **kwargs) -> Action:
-        return Action(*args, act_type=ActType.COME, **kwargs)
+        return Action(self._doingIf(args, "come"),
+                *args, subject=self.src, act_type=ActType.COME, **kwargs)
+
+    def do(self, *args, **kwargs) -> Action:
+        return Action(self._doingIf(args, "do"),
+                *args, subject=self.src, act_type=ActType.ACT, **kwargs)
 
     def destroy(self, *args, **kwargs) -> Action:
-        return Action(*args, act_type=ActType.DESTROY, **kwargs)
+        return Action(self._doingIf(args, "destroy"),
+                *args, subject=self.src, act_type=ActType.DESTROY, **kwargs)
+
+    def explain(self, *args, **kwargs) -> Action:
+        return Action(self._doingIf(args, "explain"),
+                *args, subject=self.src, act_type=ActType.EXPLAIN, **kwargs)
 
     def go(self, *args, **kwargs) -> Action:
-        return Action(*args, act_type=ActType.GO, **kwargs)
+        return Action(self._doingIf(args, "go"),
+                *args, subject=self.src, act_type=ActType.GO, **kwargs)
 
     def hear(self, *args, **kwargs) -> Action:
-        return Action(*args, act_type=ActType.HEAR, **kwargs)
+        return Action(self._doingIf(args, "hear"),
+                *args, subject=self.src, act_type=ActType.HEAR, **kwargs)
 
     def look(self, *args, **kwargs) -> Action:
-        return Action(*args, act_type=ActType.LOOK, **kwargs)
+        return Action(self._doingIf(args, "look"),
+                *args, subject=self.src, act_type=ActType.LOOK, **kwargs)
 
     def move(self, *args, **kwargs) -> Action:
-        return Action(*args, act_type=ActType.MOVE, **kwargs)
+        return Action(self._doingIf(args, "move"),
+                *args, subject=self.src, act_type=ActType.MOVE, **kwargs)
 
     def talk(self, *args, **kwargs) -> Action:
-        return Action(*args, act_type=ActType.TALK, **kwargs)
+        return Action("talk",
+                Shot(*args, isTerm=True), subject=self.src, act_type=ActType.TALK, **kwargs)
+
+    def talking(self, *args, **kwargs) -> Action:
+        return Action("talk",
+                Shot(*args), subject=self.src, act_type=ActType.TALK, **kwargs)
 
     def think(self, *args, **kwargs) -> Action:
-        return Action(*args, act_type=ActType.THINK, **kwargs)
+        return Action(self._doingIf(args, "think"),
+                *args, subject=self.src, act_type=ActType.THINK, **kwargs)
 
     def wear(self, *args, **kwargs) -> Action:
-        return Action(*args, act_type=ActType.WEAR, **kwargs)
+        return Action(self._doingIf(args, "wear"),
+                *args, subject=self.src, act_type=ActType.WEAR, **kwargs)
+    ## hook
+    def feel(self, *args, **kwargs) -> Action:
+        return Action(self._doingIf(args, "feel"),
+                *args, subject=self.src, act_type=ActType.THINK, **kwargs)
 
     ## tag
     def br(self, num: (int, str)=1) -> Action:
-        return Action(act_type=ActType.TAG, tag_type=TagType.BR, note=str(num))
+        return Action("tag", act_type=ActType.TAG, tag_type=TagType.BR, note=str(num))
 
     def comment(self, comment: str) -> Action:
-        return Action(act_type=ActType.TAG, tag_type=TagType.COMMENT, note=comment)
+        return Action("tag", act_type=ActType.TAG, tag_type=TagType.COMMENT, note=comment)
 
     def hr(self) -> Action:
-        return Action(act_type=ActType.TAG, tag_type=TagType.HR)
+        return Action("tag", act_type=ActType.TAG, tag_type=TagType.HR)
 
     def symbol(self, note: str) -> Action:
-        return Action(act_type=ActType.TAG, tag_type=TagType.SYMBOL, note=note)
+        return Action("tag", act_type=ActType.TAG, tag_type=TagType.SYMBOL, note=note)
 
     def title(self, title: str) -> Action:
-        return Action(act_type=ActType.TAG, tag_type=TagType.TITLE, note=title)
+        return Action("tag", act_type=ActType.TAG, tag_type=TagType.TITLE, note=title)
 
+    ## privates
+    def _doingIf(self, args: tuple, doing: str) -> str:
+        return args[0] if args and isAlphabetsOnly(args[0]) else doing

@@ -2,6 +2,7 @@
 """Define base container.
 """
 ## public libs
+from __future__ import annotations
 ## local libs
 from utils import assertion
 from utils.util_id import UtilityID
@@ -12,10 +13,10 @@ from . import __PRIORITY_MIN__, __PRIORITY_NORMAL__
 class BaseContainer(object):
     """Base class for a container.
     """
-    def __init__(self, title: str, data: tuple, omit: bool=False):
+    def __init__(self, title: str, data: tuple, priority: int=__PRIORITY_NORMAL__, omit: bool=False):
         self._data = assertion.isTuple(data)
         self._dataId = UtilityID.getNextId()
-        self._priority = __PRIORITY_MIN__ if omit else __PRIORITY_NORMAL__
+        self._priority = __PRIORITY_MIN__ if omit else priority
         self._title = assertion.isStr(title)
 
     ## property
@@ -34,4 +35,8 @@ class BaseContainer(object):
     @property
     def title(self) -> str:
         return self._title
+
+    ## common methods
+    def inherited(self, *args, **kwargs) -> BaseContainer:
+        return BaseContainer(self.title, *args, priority=self.priority, **kwargs)
 

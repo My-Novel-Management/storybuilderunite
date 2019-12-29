@@ -24,13 +24,10 @@ class DrawerTest(unittest.TestCase):
 
     def test_attributes(self):
         data = [
-                (False, ("test",),
-                    ("test",)),
+                (False, None,),
                 ]
-        def _checkcode(vals, expects):
-            tmp = Drawer(*vals)
+        def _checkcode(v):
+            tmp = Drawer(v)
             self.assertIsInstance(tmp, Drawer)
-            self.assertIsInstance(tmp.shot, Shot)
-            self.assertEqual(tmp.shot.infos, expects)
         validatedTestingWithFail(self, "class attributes", _checkcode, data)
 

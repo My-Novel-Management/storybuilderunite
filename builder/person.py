@@ -2,6 +2,7 @@
 """Define data type of person
 """
 ## public libs
+from __future__ import annotations
 from typing import Tuple
 ## local libs
 from utils import assertion
@@ -47,6 +48,11 @@ class Person(BaseData):
                     assertion.isStr(note),
                     )
                 )
+
+    ## static methods
+    @classmethod
+    def getGod(cls) -> Person:
+        return Person("__", "", 999, "none", "god")
 
     ## property
     @property

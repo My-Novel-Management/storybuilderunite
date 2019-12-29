@@ -17,17 +17,17 @@ class Rubi(BaseData):
         rubi (str): 1. a rubi word
         exclusions (tuple): 2. exclusion words
     """
-    def __init__(self, name: str, rubi: (str, list, tuple), exclusions: (str, list, tuple)="",
+    def __init__(self, name: str, rubi: str, exclusions: (str, list, tuple)="",
             isAlways: bool=False):
         super().__init__(name,
-                (assertion.isTuple(util.tupleEvenStr(rubi)),
+                (assertion.isStr(rubi),
                     assertion.isTuple(util.tupleEvenStr(exclusions)),
                     assertion.isBool(True if isAlways else False),
                     ))
 
     ## property
     @property
-    def rubi(self) -> tuple:
+    def rubi(self) -> str:
         return self.data[0]
 
     @property

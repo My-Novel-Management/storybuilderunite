@@ -10,6 +10,7 @@ from builder import ActType, TagType
 from builder.action import Action
 from builder.person import Person
 from builder.writer import Writer
+from builder.who import Who
 
 
 _FILENAME = "writer.py"
@@ -194,3 +195,8 @@ class WriterTest(unittest.TestCase):
             self.assertEqual(tmp.note, expect)
         validatedTestingWithFail(self, "title", _checkcode, data)
 
+    ## utils
+    def test_getWho(self):
+        tmp = Writer.getWho()
+        self.assertIsInstance(tmp, Writer)
+        self.assertIsInstance(tmp.src, Who)

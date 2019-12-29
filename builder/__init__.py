@@ -18,6 +18,16 @@ __PREFIX_TIME__ = "at_"
 __PREFIX_WORD__ = "w_"
 
 
+__MECAB_LINUX1__ = "-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd"
+__MECAB_LINUX2__ = "-d /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd"
+
+__TAG_PREFIX__ = "$"
+
+__BASE_COLUMN__ = 20
+__BASE_ROW__ = 20
+
+__DEF_FILENAME__ = "story"
+
 ## enums
 class ActType(Enum):
     ACT = auto() # basic action
@@ -27,10 +37,11 @@ class ActType(Enum):
     MOVE = auto() # moving object
     HEAR = auto() # sound effect
     LOOK = auto() # paint object
-    COME = MOVE | BE
-    GO = MOVE | DESTROY
+    COME = auto() # MOVE | BE
+    GO = auto() # MOVE | DESTROY
     TALK = auto() # dialogue
     THINK = auto() # monologue
+    EXPLAIN = auto() # status
     TAG = auto() # tag
 
 class TagType(Enum):
@@ -40,3 +51,16 @@ class TagType(Enum):
     HR = auto() # horizontal line
     SYMBOL = auto() # symbol mark
     TITLE = auto() # title
+
+class WordClasses(Enum):
+    NOUN = "名詞"
+    VERB = "動詞"
+    ADJECTIVE = "形容詞"
+    ADVERB = "副詞"
+    CONJUCTION = "接続詞"
+    INTERJECTION = "感動詞"
+    AUXVERB = "助動詞"
+    PARTICLE = "助詞"
+    MARK = "記号"
+    PREFIX = "接頭詞"
+    OTHER = "その他"

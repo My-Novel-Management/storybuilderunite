@@ -2,11 +2,12 @@
 """Define episode container.
 """
 ## public libs
+from __future__ import annotations
 from typing import Tuple
 ## local libs
 from utils import assertion
-from utils import util_tools as util
 ## local files
+from builder import __PRIORITY_NORMAL__
 from builder.basecontainer import BaseContainer
 from builder.episode import Episode
 
@@ -14,11 +15,12 @@ from builder.episode import Episode
 class Chapter(BaseContainer):
     """The container class for episodes.
     """
-    def __init__(self, title: str, *args: Episode, note: str="", omit: bool=False):
+    def __init__(self, title: str, *args: Episode, note: str="", priority: int=__PRIORITY_NORMAL__, omit: bool=False):
+        from utils.util_tools import tupleFiltered
         super().__init__(title,
-                (assertion.isTuple(util.tupleFiltered(args, Episode)),
+                (assertion.isTuple(tupleFiltered(args, Episode)),
                     assertion.isStr(note),
-                ), omit=omit)
+                ), priority=priority, omit=omit)
 
     ## property
     @property
@@ -28,3 +30,10 @@ class Chapter(BaseContainer):
     @property
     def note(self) -> str:
         return self.data[1]
+
+    ## methods
+    def inherited(self, *args: Episode, title: str="") -> Chapter:
+        return Chapter(title if title else self.title,
+                *args,
+                note=self.note,
+                priority=self.priority)

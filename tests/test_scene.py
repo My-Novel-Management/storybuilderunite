@@ -29,14 +29,14 @@ class SceneTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("camera", "stage", "day", "time")
+        attrs = ("camera", "stage", "day", "time", "actions", "note")
         p1 = Person("Taro", "", 15, "male", "student")
         st1 = Stage("room")
         dy1 = Day("a day")
         tm1 = Time("night", 22,0,0)
         data = [
                 (False, p1, st1, dy1, tm1,
-                    (p1, st1, dy1, tm1)),
+                    (p1, st1, dy1, tm1, (), "")),
                 ]
         def _creator(c, s, d, t):
             title = "test"

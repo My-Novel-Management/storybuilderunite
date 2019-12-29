@@ -2,13 +2,15 @@
 """Define action container.
 """
 ## public libs
+from __future__ import annotations
 from typing import Optional, Tuple
 ## local libs
 from utils import assertion
-from utils import util_tools as util
 ## local files
+from builder import __PRIORITY_NORMAL__
 from builder.action import Action
 from builder.basecontainer import BaseContainer
+from builder.block import Block
 from builder.day import Day
 from builder.person import Person
 from builder.stage import Stage
@@ -32,15 +34,16 @@ class Scene(BaseContainer):
             stage: Optional[Stage]=None,
             day: Optional[Day]=None,
             time: Optional[Time]=None,
-            note: str="", omit: bool=False):
+            note: str="", priority: int=__PRIORITY_NORMAL__, omit: bool=False):
+        from utils.util_tools import tupleFiltered
         super().__init__(title,
-                (assertion.isTuple(util.tupleFiltered(args, Action)),
+                (assertion.isTuple(tupleFiltered(args, (Action, Block))),
                     assertion.isInstance(camera, PersonLike) if camera else Who(),
                     assertion.isInstance(stage, StageLike) if stage else Where(),
                     assertion.isInstance(day, DayLike) if day else When(),
                     assertion.isInstance(time, TimeLike) if time else When(),
                     assertion.isStr(note),
-                ), omit=omit)
+                ), priority=priority, omit=omit)
 
     ## property
     @property
@@ -67,3 +70,18 @@ class Scene(BaseContainer):
     def note(self) -> str:
         return self.data[5]
 
+    ## methods
+    def inherited(self, *args: Action, title: str="",
+            camera: Optional[Person]=None,
+            stage: Optional[Stage]=None,
+            day: Optional[Day]=None,
+            time: Optional[Time]=None,
+            ) -> Scene:
+        return Scene(title if title else self.title,
+                *args,
+                camera=camera if camera else self.camera,
+                stage=stage if stage else self.stage,
+                day=day if day else self.day,
+                time=time if time else self.time,
+                note=self.note,
+                priority=self.priority)

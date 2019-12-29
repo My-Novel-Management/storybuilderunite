@@ -22,10 +22,10 @@ class RubiTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("rubi", "exclusions")
+        attrs = ("rubi", "exclusions", "isAlways")
         data = [
                 (False, "test", "a test", "tes",
-                    (("a test",), ("tes",))),
+                    ("a test", ("tes",), False)),
                 ]
         def _checkcode(name, rubi, excls, expects):
             tmp = Rubi(name, rubi, excls)

@@ -6,6 +6,7 @@ import unittest
 ## local files (test utils)
 from testutils import printTestTitle, validatedTestingWithFail
 ## local files
+from builder import __PRIORITY_NORMAL__
 from builder.basecontainer import BaseContainer
 from tests import __BASE_ID__
 
@@ -23,10 +24,10 @@ class BaseContainerTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("title", "data", "dataId")
+        attrs = ("title", "data", "dataId", "priority")
         data = [
                 (False, ("test",("a",)),
-                    ("test", ("a",), __BASE_ID__ + 1)),
+                    ("test", ("a",), __BASE_ID__ + 9, __PRIORITY_NORMAL__)),
                 ]
         def _checkcode(vals, expects):
             tmp = BaseContainer(*vals)

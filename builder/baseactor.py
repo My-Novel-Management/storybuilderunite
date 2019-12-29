@@ -12,14 +12,14 @@ from builder.basedata import BaseData
 class BaseActor(object):
     """Base class for a data.
     """
-    def __init__(self, roll: BaseData):
+    def __init__(self, src: BaseData):
         self._actId = UtilityID.getNextId()
-        self._roll = assertion.isInstance(roll, BaseData)
+        self._src = assertion.isInstance(src, BaseData)
 
     @property
     def actId(self) -> int:
         return self._actId
 
     @property
-    def roll(self) -> BaseData:
-        return self._roll
+    def src(self) -> BaseData:
+        return self._src

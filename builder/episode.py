@@ -2,11 +2,12 @@
 """Define scene container.
 """
 ## public libs
+from __future__ import annotations
 from typing import Tuple
 ## local libs
 from utils import assertion
-from utils import util_tools as util
 ## local files
+from builder import __PRIORITY_NORMAL__
 from builder.basecontainer import BaseContainer
 from builder.scene import Scene
 
@@ -19,11 +20,12 @@ class Episode(BaseContainer):
         scenes (tuple:Scene): 0. scenes
         note (str): 1. a note
     """
-    def __init__(self, title: str, *args: Scene, note: str="", omit: bool=False):
+    def __init__(self, title: str, *args: Scene, note: str="", priority: int=__PRIORITY_NORMAL__, omit: bool=False):
+        from utils.util_tools import tupleFiltered
         super().__init__(title,
-                (assertion.isTuple(util.tupleFiltered(args, Scene)),
+                (assertion.isTuple(tupleFiltered(args, Scene)),
                     assertion.isStr(note),
-                ), omit=omit)
+                ), priority=priority, omit=omit)
 
     ## property
     @property
@@ -34,3 +36,9 @@ class Episode(BaseContainer):
     def note(self) -> str:
         return self.data[1]
 
+    ## methods
+    def inherited(self, *args: Scene, title: str="") -> Episode:
+        return Episode(title if title else self.title,
+                *args,
+                note=self.note,
+                priority=self.priority)

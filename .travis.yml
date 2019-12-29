@@ -9,7 +9,7 @@ install:
 
 script:
     - coverage run --parallel-mode --rcfile=.coveragerc setup.py test
-#    - coverage run --parallel-mode --rcfile=.coveragerc example/momotaro.py -osdi --forcemecab
+    - coverage run --parallel-mode --rcfile=.coveragerc example/momotaro.py --forcemecab
 
 after_success:
     - coverage combine

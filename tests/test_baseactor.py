@@ -24,14 +24,14 @@ class BaseActorTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("roll", "actId")
+        attrs = ("src", "actId")
         bd1 = BaseData("test", ())
         data = [
                 (False, bd1,
-                    (bd1, __BASE_ID__ + 35)),
+                    (bd1, __BASE_ID__ + 40)),
                 ]
-        def _checkcode(roll, expects):
-            tmp = BaseActor(roll)
+        def _checkcode(src, expects):
+            tmp = BaseActor(src)
             self.assertIsInstance(tmp, BaseActor)
             for a,v in zip(attrs, expects):
                 with self.subTest(a=a, v=v):

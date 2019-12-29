@@ -5,6 +5,7 @@
 import unittest
 ## local files
 import test_action
+import test_analyzer
 import test_assertion
 import test_baseactor
 import test_basecontainer
@@ -12,9 +13,13 @@ import test_basedata
 import test_block
 import test_buildtool
 import test_chapter
+import test_converter
+import test_counter
+import test_datapack
 import test_day
 import test_drawer
 import test_episode
+import test_extractor
 import test_item
 import test_layer
 import test_person
@@ -24,6 +29,7 @@ import test_shot
 import test_stage
 import test_story
 import test_time
+import test_util_compare
 import test_util_str
 import test_util_tools
 import test_when
@@ -41,11 +47,14 @@ def suite():
 
     suite.addTests((
         ## utility
+        unittest.makeSuite(test_analyzer.AnalyzerTest),
         unittest.makeSuite(test_assertion.MethodsTest),
+        unittest.makeSuite(test_util_compare.MethodsTest),
         unittest.makeSuite(test_util_str.MethodsTest),
         unittest.makeSuite(test_util_tools.MethodsTest),
         ## data
         unittest.makeSuite(test_basedata.BaseDataTest),
+        unittest.makeSuite(test_datapack.DataPackTest),
         unittest.makeSuite(test_day.DayTest),
         unittest.makeSuite(test_item.ItemTest),
         unittest.makeSuite(test_layer.LayerTest),
@@ -72,6 +81,9 @@ def suite():
         unittest.makeSuite(test_writer.WriterTest),
         ## tools
         unittest.makeSuite(test_buildtool.BuildTest),
+        unittest.makeSuite(test_converter.ConverterTest),
+        unittest.makeSuite(test_counter.CounterTest),
+        unittest.makeSuite(test_extractor.ExtractorTest),
         ## main
         unittest.makeSuite(test_world.WorldTest),
         ))

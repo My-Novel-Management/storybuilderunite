@@ -16,9 +16,9 @@ class Layer(BaseData):
         name (str): a layer name
         words (str, tuple): layer words
     """
-    def __init__(self, name: str, *args: (str, list, tuple)):
+    def __init__(self, name: str, words: (str, list, tuple)):
         super().__init__(name,
-                (assertion.isTuple(util.tupleEvenStr(args)),
+                (assertion.isTuple(util.tupleEvenStr(words)),
                     ))
 
     ## property

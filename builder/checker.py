@@ -10,6 +10,7 @@ from builder import ActType, TagType
 from builder.action import Action
 from builder.chapter import Chapter
 from builder.episode import Episode
+from builder.item import Item
 from builder.scene import Scene
 from builder.shot import Shot
 from builder.story import Story
@@ -57,31 +58,53 @@ def _objectInOutInScene(scene: Scene) -> bool:
     #   itemの管理
     tmp = {}
     msg = []
-    isSucceeded = True
+    isSucceeded = []
+    def _addition(act: Action, name: str):
+        if name in tmp:
+            tmp[name] += int(act.note)
+        else:
+            tmp[name] = int(act.note)
+        return True
+    def _subtract(act: Action, name: str):
+        if name in tmp:
+            tmp[name] -= int(act.note)
+            return True
+        else:
+            msg.append(f"Cannot find {name}, when {act.act_type.name}! in {scene.title}")
+            return False
     for act in scene.actions:
         if not act.tag_type is TagType.NONE:
             continue
-        elif act.act_type is ActType.BE:
-            tmp[act.subject.name] = 1
-        elif act.act_type is ActType.COME:
-            tmp[act.subject.name] = 1
-        elif act.act_type is ActType.GO:
+        ## exist
+        elif act.act_type in (ActType.BE, ActType.COME):
+            isSucceeded.append(_addition(act, act.subject.name))
+        elif act.act_type in (ActType.DESTROY, ActType.GO):
+            isSucceeded.append(_subtract(act, act.subject.name))
+        ## control
+        elif act.act_type in (ActType.HAVE, ActType.WEAR):
+            items = [v for v in act.acts if isinstance(v, Item)]
             if act.subject.name in tmp:
-                tmp[act.subject.name] = 0
+                for v in items:
+                    isSucceeded.append(_addition(act, v.name))
             else:
-                msg.append(f"Cannot find {act.subject.name}, when GO! in {scene.title}")
-                isSucceeded = False
-        elif act.act_type is ActType.DESTROY:
+                msg.append(f"Cannot find {act.subject.name}, when {act.act_type.name}! in {scene.title}")
+                isSucceeded.append(False)
+        elif act.act_type in (ActType.DISCARD, ActType.TAKEOFF):
+            items = [v for v in act.acts if isinstance(v, Item)]
             if act.subject.name in tmp:
-                tmp[act.subject.name] = 0
+                for v in items:
+                    isSucceeded.append(_subtract(act, v.name))
             else:
-                msg.append(f"Cannot find {act.subject.name}, when DESTROY! in {scene.title}")
-                isSucceeded = False
+                msg.append(f"Cannot find {act.subject.name}, when {act.act_type.name}! in {scene.title}")
+                isSucceeded.append(False)
+        ## basic
         elif act.act_type in (ActType.TALK, ActType.THINK, ActType.ACT, ActType.WEAR):
             if not act.subject.name in tmp:
                 msg.append(f"Cannot find {act.subject.name}, when ACT! in {scene.title}")
-                isSucceeded = False
-    if not isSucceeded:
+                isSucceeded.append(False)
+    if len([v for v in isSucceeded if not v]) > 0:
         for v in msg:
             print(v)
-    return isSucceeded
+        return False
+    else:
+        return True

@@ -65,6 +65,15 @@ class Counter(object):
                 sceneFnc=_countActionInScene,
                 src=src if src else self.src)
 
+    def countActType(self, act_type: ActType, src: StoryLike=None) -> int:
+        return toSomething(self,
+                act_type,
+                storyFnc=_countActTypeIn,
+                chapterFnc=_countActTypeInChapter,
+                episodeFnc=_countActTypeInEpisode,
+                sceneFnc=_countActTypeInScene,
+                src=src if src else self.src)
+
     ## characters
     def countCharsOfDirection(self, src: StoryLike=None) -> int:
         return toSomething(self,
@@ -98,16 +107,6 @@ class Counter(object):
                 chapterFnc=_countAsManupaperRowsInChapter,
                 episodeFnc=_countAsManupaperRowsInEpisode,
                 sceneFnc=_countAsManupaperRowsInScene,
-                src=src if src else self.src)
-
-    ## act types
-    def countActType(self, act_type: ActType, src: StoryLike=None) -> int:
-        return toSomething(self,
-                act_type,
-                storyFnc=_countActTypeIn,
-                chapterFnc=_countActTypeInChapter,
-                episodeFnc=_countActTypeInEpisode,
-                sceneFnc=_countActTypeInScene,
                 src=src if src else self.src)
 
 
@@ -240,3 +239,4 @@ def _countKanjiOfShotInScene(scene: Scene) -> int:
         shots.append(chain.from_iterable(tmp))
     infos_expand = tuple(chain.from_iterable(shots))
     return sum(len(kanjiOf(v)) for v in infos_expand)
+

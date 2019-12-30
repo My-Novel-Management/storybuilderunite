@@ -10,6 +10,7 @@ from utils import assertion
 from utils import util_tools as util
 ## local files
 from builder import __BASE_COLUMN__, __BASE_ROW__
+from builder import ActType
 from builder import WordClasses
 from builder.analyzer import Analyzer
 from builder.chapter import Chapter
@@ -210,14 +211,17 @@ class Build(object):
                 DataPack("episodes", cnt.countEpisode()),
                 DataPack("scenes", cnt.countScene()),
                 DataPack("actions", cnt.countAction())]
-        res_addition = [
-                ]
+        res_addition = [DataPack("acttype total", cnt.countAction()),]
+        for v in ActType:
+            res_addition.append(DataPack(f"acttype {v.name}",
+                cnt.countActType(v)))
         def _alwaysDisplayOnConsole(infodata, is_debug):
             if not is_debug:
                 self.outputToConsole(infodata)
             return infodata
+        _alwaysDisplayOnConsole(Formatter.toGeneralInfo(title, res_base), is_debug)
         return self.outputTo(
-                _alwaysDisplayOnConsole(Formatter.toGeneralInfo(title, res_base), is_debug),
+                Formatter.toGeneralInfo(title, res_base + res_addition),
                 self.filename, "_info", self.extention, self.builddir, is_debug)
 
     def toInfoOfKanji(self, src: Story, is_debug: bool):

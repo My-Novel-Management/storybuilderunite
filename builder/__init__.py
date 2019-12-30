@@ -30,18 +30,27 @@ __DEF_FILENAME__ = "story"
 
 ## enums
 class ActType(Enum):
-    ACT = auto() # basic action
+    # exist control
     BE = auto() # put object in scene
     DESTROY = auto() # vanish object
     WEAR = auto() # put on object
+    TAKEOFF = auto() # DESTROY wear
+    HAVE = auto() # is-a object
+    DISCARD = auto() # not is-a = DESTROY
+    # object control
     MOVE = auto() # moving object
-    HEAR = auto() # sound effect
-    LOOK = auto() # paint object
     COME = auto() # MOVE | BE
     GO = auto() # MOVE | DESTROY
-    TALK = auto() # dialogue
+    # effect
+    HEAR = auto() # sound effect
+    LOOK = auto() # paint object
+    # basic action
+    ACT = auto() # basic action
     THINK = auto() # monologue
     EXPLAIN = auto() # status
+    # talk action
+    TALK = auto() # dialogue
+    # other
     TAG = auto() # tag
 
 class TagType(Enum):

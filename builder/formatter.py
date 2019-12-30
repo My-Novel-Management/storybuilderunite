@@ -92,6 +92,8 @@ class Formatter(object):
         # TODO? Shotのみでなく、Directionそのものの文字数も参考値出すか？
         total, manupaper, rows, columns = 0, 0, 0, 0
         chapters, episodes, scenes, actions = 0,0,0, 0
+        act_total = 0
+        acttypes = []
         for v in src:
             if assertion.isInstance(v, DataPack).head == "total":
                 total = v.body
@@ -109,11 +111,23 @@ class Formatter(object):
                 scenes = v.body
             elif v.head == "actions":
                 actions = v.body
+            elif "acttype" in v.head:
+                if "total" in v.head:
+                    act_total = v.body
+                else:
+                    acttypes.append(v.body)
         papers = manupaper / rows if rows else 0
-        return [f"# {title}\n",
+        action_info = ["--------" * 8, "\n",
+                f"## Action info: {act_total}",
+                ] + sorted([f"- {t.name}: {v/act_total*100:.2f}%" for t, v in zip(ActType, acttypes)])
+        res = [f"# {title}\n",
                 f"## Total: {total}c / [{papers:.2f}p ({manupaper:.2f}ls) ]",
-                f"## Chapters: {chapters} / Episodes: {episodes} / Scenes: {scenes} / Actions: {actions}"
+                f"## Chapters: {chapters} / Episodes: {episodes} / Scenes: {scenes} / Actions: {actions}",
                 ]
+        if act_total:
+            return res + action_info
+        else:
+            return res
 
     @classmethod
     def toKanjiInfo(cls, title: str, src: list) -> list:

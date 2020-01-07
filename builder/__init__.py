@@ -4,6 +4,7 @@ __TITLE__ = "StoryBuilder"
 __DESC__ = "Tool for building a story"
 
 
+from collections import namedtuple
 from enum import Enum, auto
 
 
@@ -13,6 +14,8 @@ __PRIORITY_MAX__ = 10
 __PRIORITY_MIN__ = 0
 
 __PREFIX_STAGE__ = "on_"
+__SUFFIX_STAGE_INT__ = "_int"
+__SUFFIX_STAGE_EXT__ = "_ext"
 __PREFIX_DAY__ = "in_"
 __PREFIX_TIME__ = "at_"
 __PREFIX_WORD__ = "w_"
@@ -28,35 +31,75 @@ __BASE_ROW__ = 20
 
 __DEF_FILENAME__ = "story"
 
+__ASSET_ELEMENTS__ = (
+        "PERSONS", "STAGES", "DAYS", "TIMES", "ITEMS", "WORDS", "RUBIS", "LAYERS",
+        )
+
+__FORMAT_DEFAULT__ = (0, 0, 0, 0)
+__FORMAT_ESTAR__ = (1, 2, 2, 1)
+__FORMAT_WEB__ = (0, 1, 1, 0)
+__FORMAT_PHONE__ = (1, 1, 1, 1)
+
+__DEF_YEAR__ = 2020
+__DEF_MON__ = 1
+__DEF_DAY__ = 1
+
 ## enums
 class ActType(Enum):
-    # exist control
+    # basic action
+    ACT = auto() # basic action
+    # object control
     BE = auto() # put object in scene
     DESTROY = auto() # vanish object
-    WEAR = auto() # put on object
-    TAKEOFF = auto() # DESTROY wear
     HAVE = auto() # is-a object
     DISCARD = auto() # not is-a = DESTROY
-    # object control
-    MOVE = auto() # moving object
-    COME = auto() # MOVE | BE
-    GO = auto() # MOVE | DESTROY
+    COME = auto()
+    GO = auto()
     # effect
     HEAR = auto() # sound effect
     LOOK = auto() # paint object
-    # basic action
-    ACT = auto() # basic action
-    THINK = auto() # monologue
-    EXPLAIN = auto() # status
     # talk action
     TALK = auto() # dialogue
+    THINK = auto() # monologue
+    EXPLAIN = auto() # status/narration
+    VOICE = auto() # specific voice
     # other
     TAG = auto() # tag
+    META = auto() # meta
+
+class DataType(Enum):
+    NONE = auto()
+    ACTION = auto() # action
+    HEAD = auto() # sceneより上位のcontainer
+    TITLE = auto() # title
+    DATA_STR = auto()
+    DATA_DICT = auto()
+    STORY_TITLE = auto()
+    CHAPTER_TITLE = auto()
+    EPISODE_TITLE = auto()
+    SCENE_TITLE = auto()
+    SCENE_SETTING = auto()
+    STAGE_SETTING = auto()
+    PERSON_SETTING = auto()
+    SCENE_OBJECT = auto()
+    TAG = auto()
+    DESCRIPTION = auto()
+    DIALOGUE = auto()
+    MONOLOGUE = auto()
+    NARRATION = auto()
+    VOICE = auto()
+
+class MetaType(Enum):
+    NONE = auto()
+    INFO = auto()
+    TEST_EXISTS_THAT = auto()       # A subejct exists (in scene)
+    TEST_HAS_THAT = auto()          # the subject has A item (object)
 
 class TagType(Enum):
     NONE = auto()
     BR = auto() # break line
     COMMENT = auto() # comment
+    OUTLINE = auto() # outline
     HR = auto() # horizontal line
     SYMBOL = auto() # symbol mark
     TITLE = auto() # title
@@ -73,3 +116,6 @@ class WordClasses(Enum):
     MARK = "記号"
     PREFIX = "接頭詞"
     OTHER = "その他"
+
+ConteData = namedtuple("ConteData",
+                        ("type", "dialogue", "subject", "objects", "content", "count", "note"))

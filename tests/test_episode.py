@@ -23,7 +23,7 @@ class EpisodeTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("scenes", "note")
+        attrs = ("data", "note")
         sc1 = Scene("apple")
         sc2 = Scene("orange")
         data = [
@@ -38,3 +38,9 @@ class EpisodeTest(unittest.TestCase):
                     self.assertEqual(getattr(tmp, a), v)
         validatedTestingWithFail(self, "class attributes", _checkcode, data)
 
+    def test_inherited(self):
+        sc1, sc2 = Scene("apple"), Scene("orange")
+        tmp = Episode("test", sc1)
+        self.assertEqual(tmp.data, (sc1,))
+        tmp1 = tmp.inherited(sc2)
+        self.assertEqual(tmp1.data, (sc2,))

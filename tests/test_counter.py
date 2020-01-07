@@ -13,7 +13,6 @@ from builder.counter import Counter
 from builder.episode import Episode
 from builder.person import Person
 from builder.scene import Scene
-from builder.shot import Shot
 from builder.story import Story
 
 
@@ -27,110 +26,68 @@ class CounterTest(unittest.TestCase):
         printTestTitle(_FILENAME, "Counter class")
 
     def setUp(self):
-        pass
+        self.taro = Person("太郎", "", 15, "male", "student", "me:俺")
+        self.basedata = Story("test", Chapter("c1", Episode("e1",
+            Scene("s1", Action("apple", subject=self.taro)))))
 
     def test_attributes(self):
-        tmp = Counter(Story("test"))
+        tmp = Counter()
         self.assertIsInstance(tmp, Counter)
 
-    def test_countChapter(self):
+    def test_actions(self):
         data = [
-                (False, Story("test", Chapter("1"), Chapter("2")),
-                    2),
-                (False, Chapter("test"),
-                    1),
-                (False, Episode("test"), 0),
-                (False, Scene("test"), 0),
+                (False, self.basedata, 1),
                 ]
-        def _checkcode(v, expect):
-            self.assertEqual(Counter(v).countChapter(), expect)
-        validatedTestingWithFail(self, "countChapter", _checkcode, data)
+        validatedTestingWithFail(self, "actions", lambda v,expect: self.assertEqual(
+            Counter.actions(v), expect), data)
 
-    def test_countEpisode(self):
+    def test_actType(self):
         data = [
-                (False, Story("test", Chapter("c1", Episode("1"), Episode("2"))),
-                    2),
-                (False, Chapter("c1", Episode("1")), 1),
-                (False, Episode("1"), 1),
-                (False, Scene("1"), 0),
+                (False, self.basedata, ActType.ACT, 1),
+                (False, self.basedata, ActType.BE, 0),
                 ]
-        def _checkcode(v, expect):
-            self.assertEqual(Counter(v).countEpisode(), expect)
-        validatedTestingWithFail(self, "countEpisode", _checkcode, data)
+        validatedTestingWithFail(self, "actType", lambda v,t,expect: self.assertEqual(
+            Counter.actType(v, t), expect), data)
 
-    def test_countScene(self):
+    def test_chapters(self):
         data = [
-                (False, Story("test", Chapter("c1", Episode("e1", Scene("1"), Scene("2")))),
-                    2),
-                (False, Chapter("test", Episode("e1", Scene("1"))),
-                    1),
-                (False, Episode("test", Scene("1"), Scene("2"), Scene("3")),
-                    3),
-                (False, Scene("1"), 1),
+                (False, self.basedata, 1),
                 ]
-        def _checkcode(v, expect):
-            self.assertEqual(Counter(v).countScene(), expect)
-        validatedTestingWithFail(self, "countScene", _checkcode, data)
+        validatedTestingWithFail(self, "chapters", lambda v,expect: self.assertEqual(
+            Counter.chapters(v), expect), data)
 
-    def test_countAction(self):
+    def test_episodes(self):
         data = [
-                (False, Story("test", Chapter("c1", Episode("e1",
-                    Scene("1", Action("a"), Action("a"))))),
-                    2),
-                (False, Chapter("c1", Episode("e1", Scene("s1", Action("a")))),
-                    1),
-                (False, Episode("e1", Scene("s1")),
-                    0),
-                (False, Scene("s1", Action("a")), 1),
+                (False, self.basedata, 1),
                 ]
-        def _checkcode(v, expect):
-            self.assertEqual(Counter(v).countAction(), expect)
-        validatedTestingWithFail(self, "countAction", _checkcode, data)
+        validatedTestingWithFail(self, "episodes", lambda v,expect: self.assertEqual(
+            Counter.episodes(v), expect), data)
 
-    def test_countCharsOfDirection(self):
+    def test_scenes(self):
         data = [
-                (False, Story("test", Chapter("c1", Episode("e1",
-                    Scene("s1", Action("a","apple"))))),
-                    5),
-                (False, Scene("s1", Action("a","apple"), Action("a","orange")),
-                    11),
+                (False, self.basedata, 1),
                 ]
-        def _checkcode(v, expect):
-            self.assertEqual(Counter(v).countCharsOfDirection(), expect)
-        validatedTestingWithFail(self, "countCharsOfDirection", _checkcode, data)
+        validatedTestingWithFail(self, "scenes", lambda v,expect: self.assertEqual(
+            Counter.scenes(v), expect), data)
 
-    def test_countCharsOfShot(self):
+    def test_descriptions(self):
         data = [
-                (False, Story("test", Chapter("c1", Episode("e1",
-                    Scene("s1", Action("a",Shot("apple")))))),
-                    5),
-                (False, Scene("s1", Action("a",Shot("apple"), Shot("orange"))),
-                    11),
+                (False, self.basedata, 7),
                 ]
-        def _checkcode(v, expect):
-            self.assertEqual(Counter(v).countCharsOfShot(), expect)
-        validatedTestingWithFail(self, "countCharsOfShot", _checkcode, data)
+        validatedTestingWithFail(self, "descriptions", lambda v,expect: self.assertEqual(
+            Counter.descriptions(v), expect), data)
 
-    def test_countAsManupaperRows(self):
+    def test_kanjis(self):
         data = [
-                (False, Story("test", Chapter("c1", Episode("e1",
-                    Scene("s1", Action("a",Shot("apple"*10)))))),
-                    20, 3),
-                (False, Scene("s1", Action("a",Shot("apple", isTerm=True), Shot("apple"))),
-                    20, 2),
-                (False, Scene("s1", Action("a",Shot("apple"), Shot("apple"))),
-                    20, 1),
+                (False, self.basedata, 0),
+                (False, Action("太郎は大半食べる"), 5),
                 ]
-        def _checkcode(v, c, expect):
-            self.assertEqual(Counter(v).countAsManupaperRows(c), expect)
-        validatedTestingWithFail(self, "countAsManupaperRows", _checkcode, data)
+        validatedTestingWithFail(self, "kanjis", lambda v,expect: self.assertEqual(
+            Counter.kanjis(v), expect), data)
 
-    def test_countActType(self):
+    def test_manupaperRows(self):
         data = [
-                (False, Story("test", Chapter("c1", Episode("e1",
-                    Scene("s1", Action("a",act_type=ActType.BE))))),
-                    ActType.BE, 1),
+                (False, self.basedata, 20, 1),
                 ]
-        def _checkcode(v, t, expect):
-            self.assertEqual(Counter(v).countActType(t), expect)
-        validatedTestingWithFail(self, "countActType", _checkcode, data)
+        validatedTestingWithFail(self, "manupaperRows", lambda v,c,expect: self.assertEqual(
+            Counter.manupaperRows(v, c), expect), data)

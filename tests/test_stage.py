@@ -22,21 +22,19 @@ class StageTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("note",)
         data = [
                 (False, "test", "a stage",
-                    ("a stage",)),
+                    "a stage"),
                 ]
-        def _creator(name, note):
-            if note:
-                return Stage(name, note)
+        def _creator(name, info):
+            if info:
+                return Stage(name, info)
             else:
                 return Stage(name)
-        def _checkcode(name, note, expects):
-            tmp = _creator(name, note)
+        def _checkcode(name, info, expect):
+            tmp = _creator(name, info)
             self.assertIsInstance(tmp, Stage)
-            for a,v in zip(attrs, expects):
-                with self.subTest(a=a, v=v):
-                    self.assertEqual(getattr(tmp, a), v)
+            self.assertEqual(tmp.name, name)
+            self.assertEqual(tmp.data, expect)
         validatedTestingWithFail(self, "class attributes", _checkcode, data)
 

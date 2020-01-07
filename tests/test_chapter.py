@@ -23,7 +23,7 @@ class ChapterTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("episodes", "note")
+        attrs = ("data", "note")
         ep1 = Episode("apple")
         ep2 = Episode("orange")
         data = [
@@ -38,3 +38,9 @@ class ChapterTest(unittest.TestCase):
                     self.assertEqual(getattr(tmp, a), v)
         validatedTestingWithFail(self, "class attributes", _checkcode, data)
 
+    def test_inherited(self):
+        ep1, ep2 = Episode("apple"), Episode("orange")
+        tmp = Chapter("test", ep1)
+        self.assertEqual(tmp.data, (ep1,))
+        tmp1 = tmp.inherited(ep2)
+        self.assertEqual(tmp1.data, (ep2,))

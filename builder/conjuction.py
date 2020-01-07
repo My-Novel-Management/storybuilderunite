@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Define pronoun data for person.
+"""Define special data type for action joint
 """
 ## public libs
 ## local libs
@@ -8,10 +8,10 @@ from utils import assertion
 from builder.basedata import BaseData
 
 
-class Who(BaseData):
-    """The data class for a pronoun.
+class Then(BaseData):
+    """The conjuction for action.
     """
-    __NAME__ = "__who__"
+    __NAME__ = "__then__"
     def __init__(self):
-        super().__init__(Who.__NAME__, ())
+        super().__init__(Then.__NAME__, None)
 

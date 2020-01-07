@@ -22,16 +22,14 @@ class WordTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("note",)
         data = [
                 (False, "test", "a test",
-                    ("a test",)),
+                    "a test",),
                 ]
-        def _checkcode(name, note, expects):
-            tmp = Word(name, note)
+        def _checkcode(name, info, expect):
+            tmp = Word(name, info) if info else Word(name)
             self.assertIsInstance(tmp, Word)
-            for a,v in zip(attrs, expects):
-                with self.subTest(a=a, v=v):
-                    self.assertEqual(getattr(tmp, a), v)
+            self.assertEqual(tmp.name, name)
+            self.assertEqual(tmp.data, expect)
         validatedTestingWithFail(self, "class attributes", _checkcode, data)
 

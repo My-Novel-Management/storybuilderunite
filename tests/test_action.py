@@ -8,8 +8,9 @@ from testutils import printTestTitle, validatedTestingWithFail
 ## local files
 from builder import ActType, TagType
 from builder.action import Action
+from builder.conjuction import Then
 from builder.person import Person
-from builder.who import Who
+from builder.pronoun import Who
 
 
 _FILENAME = "action.py"
@@ -23,12 +24,15 @@ class ActionTest(unittest.TestCase):
 
     def setUp(self):
         self.taro = Person("Taro", "山田,太郎", 15, "male", "student")
+        self.hana = Person("Hana", "田中,花子", 17, "female", "parttimer")
 
     def test_attributes(self):
-        attrs = ("acts", "doing", "subject", "act_type", "tag_type", "note",)
+        attrs = ("data", "subject", "act_type", "tag_type", "note", "itemCount")
         data = [
                 (False, ("test", "apple"), self.taro, ActType.ACT, TagType.NONE, "a test",
-                    (("apple",), "test", self.taro, ActType.ACT, TagType.NONE, "a test")),
+                    (("test", "apple",), self.taro, ActType.ACT, TagType.NONE, "a test", 0)),
+                (False, ("test", "apple", 1), self.taro, ActType.ACT, TagType.NONE, "a test",
+                    (("test", "apple",), self.taro, ActType.ACT, TagType.NONE, "a test", 1)),
                 ]
         def _creator(vals, subject, act_type, tag_type, note):
             if subject and act_type and tag_type and note:
@@ -49,3 +53,12 @@ class ActionTest(unittest.TestCase):
                     self.assertEqual(getattr(tmp, a), v)
         validatedTestingWithFail(self, "class attributes", _checkcode, data)
 
+    def test_inherited(self):
+        tmp = Action("apple", subject=self.taro)
+        self.assertEqual(tmp.data, ("apple",))
+        tmp1 = tmp.inherited("orange")
+        self.assertEqual(tmp1.data, ("orange",))
+
+    def test_conjuctionReplaced(self):
+        tmp = Action("&", "apple")
+        self.assertIsInstance(tmp.data[0], Then)

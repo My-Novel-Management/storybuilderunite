@@ -8,6 +8,7 @@ __STAGE_LAYER__ = "__stage__"
 STAGE_LAYERS = (
         (__STAGE_LAYER__ + "building", "建物",
             (
+                "家",
                 "壁",
                 "天井",
                 "床",

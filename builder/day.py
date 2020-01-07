@@ -2,6 +2,7 @@
 """Define data type of day
 """
 ## public libs
+import datetime
 ## local libs
 from utils import assertion
 ## local files
@@ -22,27 +23,11 @@ class Day(BaseData):
     __MON__ = 1
     __DAY__ = 1
     def __init__(self, name: str, mon: int=__MON__, day: int=__DAY__, year: int=__YEAR__, note: str=""):
-        super().__init__(name,
-                (assertion.isInt(mon),
-                    assertion.isInt(day),
-                    assertion.isInt(year),
-                    assertion.isStr(note),)
+        super().__init__(name, datetime.date(
+                    year=assertion.isInt(year),
+                    month=assertion.isInt(mon),
+                    day=assertion.isInt(day),
+                    ),
+                note=note,
                 )
-
-    ## property
-    @property
-    def mon(self) -> int:
-        return self.data[0]
-
-    @property
-    def day(self) -> int:
-        return self.data[1]
-
-    @property
-    def year(self) -> int:
-        return self.data[2]
-
-    @property
-    def note(self) -> str:
-        return self.data[3]
 

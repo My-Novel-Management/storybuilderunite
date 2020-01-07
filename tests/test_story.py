@@ -23,7 +23,7 @@ class StoryTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("chapters", "note")
+        attrs = ("data", "note")
         ch1 = Chapter("melon")
         ch2 = Chapter("lemon")
         data = [
@@ -38,3 +38,9 @@ class StoryTest(unittest.TestCase):
                     self.assertEqual(getattr(tmp, a), v)
         validatedTestingWithFail(self, "class attributes", _checkcode, data)
 
+    def test_inherited(self):
+        ch1, ch2 = Chapter("apple"), Chapter("orange")
+        tmp = Story("test", ch1)
+        self.assertEqual(tmp.data, (ch1,))
+        tmp1 = tmp.inherited(ch2)
+        self.assertEqual(tmp1.data, (ch2,))

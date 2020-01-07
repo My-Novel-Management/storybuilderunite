@@ -44,3 +44,18 @@ class PersonTest(unittest.TestCase):
                     self.assertEqual(getattr(tmp, a), v)
         validatedTestingWithFail(self, "class attributes", _checkcode, data)
 
+    def test_clsmethod_fullnamesConstructed(self):
+        data = [
+                (False, Person("Taro", "山田,太郎", 15, "male", "student", "me:俺"),
+                    ("山田", "太郎", "山田太郎", "太郎・山田")),
+                ]
+        def _checkcode(v, expect):
+            tmp = Person.fullnamesConstructed(v)
+            self.assertEqual(tmp, expect)
+        validatedTestingWithFail(self, "clsmethod: fullnamesConstructed",
+                _checkcode, data)
+
+    def test_getGod(self):
+        tmp = Person.getGod()
+        self.assertIsInstance(tmp, Person)
+        self.assertEqual(tmp.name, "■")

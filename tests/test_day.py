@@ -3,6 +3,7 @@
 """
 ## public libs
 import unittest
+import datetime
 ## local files (test utils)
 from testutils import printTestTitle, validatedTestingWithFail
 ## local files
@@ -22,10 +23,9 @@ class DayTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("mon", "day", "year", "note",)
         data = [
                 (False, "test", 2,3, 1990, "a day",
-                    (2,3, 1990, "a day")),
+                    datetime.date(1990, 2,3), "a day"),
                 ]
         def _creator(name, mon, day, year, note):
             if mon and day and year and note:
@@ -38,11 +38,10 @@ class DayTest(unittest.TestCase):
                 return Day(name, mon)
             else:
                 return Day(name)
-        def _checkcode(name, mon, day, year, note, expects):
+        def _checkcode(name, mon, day, year, note, expect, exp_note):
             tmp = _creator(name, mon, day, year, note)
             self.assertIsInstance(tmp, Day)
-            for a,v in zip(attrs, expects):
-                with self.subTest(a=a, v=v):
-                    self.assertEqual(getattr(tmp, a), v)
+            self.assertEqual(tmp.data, expect)
+            self.assertEqual(tmp.note, exp_note)
         validatedTestingWithFail(self, "class attributes", _checkcode, data)
 

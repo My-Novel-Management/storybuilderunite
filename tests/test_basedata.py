@@ -6,7 +6,6 @@ import unittest
 ## local files (test utils)
 from testutils import printTestTitle, validatedTestingWithFail
 ## local files
-from tests import __BASE_ID__
 from builder.basedata import BaseData
 
 
@@ -23,16 +22,27 @@ class BaseDataTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("name", "data", "dataId")
+        attrs = ("name", "data", "note", "textures")
         data = [
-                (False, ("test",("a",)),
-                    ("test", ("a",), __BASE_ID__ - 12)),
+                (False, "test", "a", "a note",
+                    ("test", "a", "a note", {})),
                 ]
-        def _checkcode(vals, expects):
-            tmp = BaseData(*vals)
+        def _checkcode(name, data, note, expects):
+            tmp = BaseData(name, *data, note=note)
             self.assertIsInstance(tmp, BaseData)
             for a,v in zip(attrs, expects):
                 with self.subTest(a=a, v=v):
                     self.assertEqual(getattr(tmp, a), v)
         validatedTestingWithFail(self, "class attributes", _checkcode, data)
 
+    def test_dataId(self):
+        tmp = BaseData("test")
+        self.assertIsInstance(tmp.dataId, int)
+
+    def test_texture(self):
+        tmp = BaseData("test")
+        self.assertEqual(tmp.textures, {})
+        tmp.setTexture("a", "apple")
+        self.assertEqual(tmp.textures, {"a":"apple"})
+        tmp.updateTextures({"a":"orange","b":"melon"})
+        self.assertEqual(tmp.textures, {"a":"orange","b":"melon"})

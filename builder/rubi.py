@@ -4,7 +4,7 @@
 ## public libs
 ## local libs
 from utils import assertion
-from utils import util_tools as util
+from utils.util_str import tupleEvenStr
 ## local files
 from builder.basedata import BaseData
 
@@ -19,21 +19,15 @@ class Rubi(BaseData):
     """
     def __init__(self, name: str, rubi: str, exclusions: (str, list, tuple)="",
             isAlways: bool=False):
-        super().__init__(name,
-                (assertion.isStr(rubi),
-                    assertion.isTuple(util.tupleEvenStr(exclusions)),
-                    assertion.isBool(True if isAlways else False),
-                    ))
+        super().__init__(name, assertion.isStr(rubi))
+        self._exclusions = assertion.isTuple(tupleEvenStr(exclusions))
+        self._isAlways = assertion.isBool(True if isAlways else False)
 
     ## property
     @property
-    def rubi(self) -> str:
-        return self.data[0]
-
-    @property
     def exclusions(self) -> tuple:
-        return self.data[1]
+        return self._exclusions
 
     @property
     def isAlways(self) -> bool:
-        return self.data[2]
+        return self._isAlways

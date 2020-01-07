@@ -32,10 +32,10 @@ PERSONS = (
         ("taro", "桃太郎", "", 15, "male", "無職", "me:俺"),
         ("granpa", "おじいさん", "守屋,源三郎", 75, "male", "木こり", "me:儂:S:おじいさん:granma:お前"),
         ("granma", "おばあさん", "守屋,富", 74, "female", "農家", "me:私:S:おばあさん:granpa:あなた"),
-        ("daemon1", "赤鬼", "", 35, "male", "鬼", "me:ワイ"),
+        ("daemon", "鬼", "", 35, "male", "鬼", "me:ワイ"),
         ("dog", "犬助", "", 18, "male", "犬", "me:ボク"),
         ("monkey", "猿衛門", "", 16, "male", "猿", "me:オイラ"),
-        ("pheasant", "雉子", "", 17, "female", "雉", "me:わたし"),
+        ("bird", "雉子", "", 17, "female", "雉", "me:わたし"),
         )
 
 STAGES = (
@@ -50,9 +50,7 @@ STAGES = (
 
 DAYS = (
         # Tag / 名前 / 月 / 日 / 年
-        ("getpeach", "桃拾った", 7,7, 10),
         ("birth", "太郎生まれた", 7,7, 10),
-        ("rumor", "鬼の噂", 9,1, 13),
         ("voyage", "出発の日", 10,1, 13),
         ("meetdog", "犬に会う", 10,4, 13),
         ("rideship", "船にて", 10,10, 13),
@@ -62,10 +60,6 @@ DAYS = (
 
 TIMES = (
         # Tag / 名前 / 時 / 分
-        ("morning", "朝", 8, 0),
-        ("midmorning", "午前", 10, 0),
-        ("afternoon", "午後", 14, 0),
-        ("night", "夜", 19, 0),
         )
 
 ITEMS = (
@@ -83,11 +77,12 @@ ITEMS = (
         ("katana", "刀"),
         ("flag", "旗"),
         ("cloth_boro", "ボロ着"),
+        ("blade", "ナタ"),
         )
 
 WORDS = (
         # Tag / 名前 / 紹介
-        ("island", "鬼ヶ島"),
+        ("daemon", "鬼"),
         )
 
 RUBIS = (

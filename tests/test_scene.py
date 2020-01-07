@@ -6,14 +6,14 @@ import unittest
 ## local files (test utils)
 from testutils import printTestTitle, validatedTestingWithFail
 ## local files
+from builder.action import Action
+from builder.block import Block
 from builder.day import Day
 from builder.person import Person
+from builder.pronoun import When, Where, Who
 from builder.scene import Scene
 from builder.stage import Stage
 from builder.time import Time
-from builder.when import When
-from builder.where import Where
-from builder.who import Who
 
 
 _FILENAME = "scene.py"
@@ -29,7 +29,7 @@ class SceneTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("camera", "stage", "day", "time", "actions", "note")
+        attrs = ("camera", "stage", "day", "time", "data", "note")
         p1 = Person("Taro", "", 15, "male", "student")
         st1 = Stage("room")
         dy1 = Day("a day")
@@ -40,15 +40,14 @@ class SceneTest(unittest.TestCase):
                 ]
         def _creator(c, s, d, t):
             title = "test"
-            data = ()
             if c and s and d and t:
-                return Scene(title, data, camera=c, stage=s, day=d, time=t)
+                return Scene(title, camera=c, stage=s, day=d, time=t)
             elif c and s and d:
-                return Scene(title, data, camera=c, stage=s, day=d)
+                return Scene(title, camera=c, stage=s, day=d)
             elif c and s:
-                return Scene(title, data,camera=c, stage=s)
+                return Scene(title, camera=c, stage=s)
             else:
-                return Scene(title, data)
+                return Scene(title)
         def _checkcode(camera, stage, day, time, expects):
             tmp = _creator(camera, stage, day, time)
             self.assertIsInstance(tmp, Scene)
@@ -57,3 +56,25 @@ class SceneTest(unittest.TestCase):
                     self.assertEqual(getattr(tmp, a), v)
         validatedTestingWithFail(self, "class attributes", _checkcode, data)
 
+    def test_attributes2(self):
+        ac1, ac2 = Action("apple"), Action("orange")
+        bk1, bk2 = Block("A"), Block("B")
+        data = [
+                (False, (ac1,ac2),
+                    (ac1,ac2)),
+                (False, (bk1, bk2),
+                    (bk1, bk2)),
+                (False, (ac1, bk1),
+                    (ac1, bk1)),
+                ]
+        def _checkcode(vals, expect):
+            tmp = Scene("test", *vals)
+            self.assertEqual(tmp.data, expect)
+        validatedTestingWithFail(self, "class attributes(Action, Scene)", _checkcode, data)
+
+    def test_inherited(self):
+        ac1, ac2 = Action("apple"), Action("orange")
+        tmp = Scene("test", ac1)
+        self.assertEqual(tmp.data, (ac1,))
+        tmp1 = tmp.inherited(ac2)
+        self.assertEqual(tmp1.data, (ac2,))

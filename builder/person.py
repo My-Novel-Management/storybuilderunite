@@ -6,11 +6,12 @@ from __future__ import annotations
 from typing import Tuple
 ## local libs
 from utils import assertion
-from utils import util_str as sutil
+from utils.util_str import dictFromStrBySplitter, strDividedBySplitter
 ## local files
 from builder.basedata import BaseData
 
 
+## define class
 class Person(BaseData):
     """The data class of person.
 
@@ -23,20 +24,8 @@ class Person(BaseData):
         calling (dict): a calling dictionary.
         note (str): a note.
     """
-    __MALE__ = "male"
-    __FEMALE__ = "female"
-    __AGE_CHILD__ = 10
-    __AGE_TEEN__ = 15
-    __AGE__ = 25
-    __AGE_OLD__ = 60
-    __JOB_CHILD__ = "小学生"
-    __JOB_TEEN__ = "学生"
-    __JOB__ = "会社員"
-    __JOB_OLD__ = "無職"
     __CALLING__ = "me:私"
     __NOTE__ = "nothing"
-
-
     def __init__(self, name: str, fullname: str, age: int, sex: str, job: str,
             calling: [dict, str]=__CALLING__, note: str=__NOTE__):
         super().__init__(name,
@@ -45,14 +34,9 @@ class Person(BaseData):
                     assertion.isStr(sex),
                     assertion.isStr(job),
                     assertion.isDict(self._callingConstructed(calling, name)),
-                    assertion.isStr(note),
-                    )
+                    ),
+                note=note,
                 )
-
-    ## static methods
-    @classmethod
-    def getGod(cls) -> Person:
-        return Person("__", "", 999, "none", "god")
 
     ## property
     @property
@@ -75,12 +59,23 @@ class Person(BaseData):
     def calling(self) -> dict:
         return self.data[4]
 
-    @property
-    def note(self) -> str:
-        return self.data[5]
+    ## method (class)
+    @classmethod
+    def fullnamesConstructed(cls, src: Person) -> tuple:
+        tmp = src.fullname if assertion.isInstance(src, Person).fullname else src.name
+        last, first = strDividedBySplitter(tmp, ",")
+        full = tmp.replace(',', '')
+        exfull = src.name
+        if src.fullname:
+            exfull = f"{first}・{last}"
+        return (last, first, full, exfull)
+
+    @classmethod
+    def getGod(cls) -> Person:
+        return Person("■", "", 99, "none", "god")
 
     ## privates
     def _callingConstructed(self, calling: (str, dict), name: str):
-        tmp = sutil.dictFromStrBySplitter(calling, ":")
+        tmp = dictFromStrBySplitter(calling, ":")
         me = tmp['me'] if 'me' in tmp else '私'
         return dict(tmp, **{'S':name, 'M':me})

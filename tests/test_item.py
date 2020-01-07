@@ -22,16 +22,14 @@ class ItemTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("note",)
         data = [
                 (False, "test", "a test",
-                    ("a test",)),
+                    "a test",),
                 ]
-        def _checkcode(name, note, expects):
-            tmp = Item(name, note)
+        def _checkcode(name, info, expect):
+            tmp = Item(name, info) if info else Item(name)
             self.assertIsInstance(tmp, Item)
-            for a,v in zip(attrs, expects):
-                with self.subTest(a=a, v=v):
-                    self.assertEqual(getattr(tmp, a), v)
+            self.assertEqual(tmp.name, name)
+            self.assertEqual(tmp.data, expect)
         validatedTestingWithFail(self, "class attributes", _checkcode, data)
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Test: action.py
+"""Test: assertion.py
 """
 import unittest
 from testutils import printTestTitle, validatedTestingWithFail

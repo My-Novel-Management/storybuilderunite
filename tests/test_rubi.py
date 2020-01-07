@@ -22,7 +22,7 @@ class RubiTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("rubi", "exclusions", "isAlways")
+        attrs = ("data", "exclusions", "isAlways")
         data = [
                 (False, "test", "a test", "tes",
                     ("a test", ("tes",), False)),

@@ -16,7 +16,6 @@ from builder.chapter import Chapter
 from builder.episode import Episode
 from builder.extractor import Extractor
 from builder.scene import Scene
-from builder.shot import Shot
 from builder.story import Story
 
 
@@ -33,7 +32,7 @@ class Analyzer(object):
         ##  必要な初期化
         self.tokenizer.parse('')
 
-    ## methos
+    ## methods
     def collectionsWordClassByMecab(self, src: StoryLike) -> Dict[str, list]:
         '''
             - 名詞
@@ -51,13 +50,9 @@ class Analyzer(object):
         nouns, verbs, adjectives, adverbs = [], [], [], []
         conjuctions, interjections, auxverbs, particles = [], [], [], []
         marks, prefixs, others = [], [], []
-        extr = Extractor(src)
-        tmp = []
+        tmp = Extractor.stringsFrom(src)
         def _excepted(target: str):
             return target in ('EOS', '', 't', 'ー')
-        for info in [v.infos for v in extr.shots]:
-            for v in info:
-                tmp.append(v)
         parsed = self.tokenizer.parse("\n".join(tmp)).split("\n")
         tokens = (re.split('[\t,]', v) for v in parsed)
         for v in tokens:
@@ -100,4 +95,9 @@ class Analyzer(object):
                 WordClasses.PREFIX.name: prefixs,
                 WordClasses.OTHER.name: others,
                 }
-
+    ## methods (singles)
+    def verbs(self, src: (str, list, tuple)) -> list:
+        parsed = self.tokenizer.parse("\n".join(src)).split('\n')
+        tokens = (re.split('[\t,]', v) for v in parsed)
+        tmp = []
+        return [v[7] for v in tokens if len(v) > 1 and (v[1] == "動詞" or v[2] == "サ変接続" or v[3] == "サ変接続")]

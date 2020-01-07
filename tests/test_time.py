@@ -2,6 +2,7 @@
 """Test: time.py
 """
 ## public libs
+import datetime
 import unittest
 ## local files (test utils)
 from testutils import printTestTitle, validatedTestingWithFail
@@ -25,24 +26,12 @@ class TimeTest(unittest.TestCase):
         attrs = ("hour", "min", "sec", "note",)
         data = [
                 (False, "test", 12, 1, 5, "a time",
-                    (12, 1, 5, "a time")),
+                    datetime.time(12, 1, 5), "a time"),
                 ]
-        def _creator(name, hour, min, sec, note):
-            if hour and min and sec and note:
-                return Time(name, hour, min, sec, note)
-            elif hour and min and sec:
-                return Time(name, hour, min, sec)
-            elif hour and min:
-                return Time(name, hour, min)
-            elif hour:
-                return Time(name, hour)
-            else:
-                return Time(name)
-        def _checkcode(name, hour, min, sec, note, expects):
-            tmp = _creator(name, hour, min, sec, note)
+        def _checkcode(name, hour, min, sec, note, expect, exp_note):
+            tmp = Time(name, hour, min, sec, note=note)
             self.assertIsInstance(tmp, Time)
-            for a,v in zip(attrs, expects):
-                with self.subTest(a=a, v=v):
-                    self.assertEqual(getattr(tmp, a), v)
+            self.assertEqual(tmp.data, expect)
+            self.assertEqual(tmp.note, exp_note)
         validatedTestingWithFail(self, "class attributes", _checkcode, data)
 

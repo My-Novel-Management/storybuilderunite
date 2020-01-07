@@ -22,7 +22,7 @@ class LayerTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("words",)
+        attrs = ("data",)
         data = [
                 (False, "test", "a test",
                     (("a test",),)),

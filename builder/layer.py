@@ -4,7 +4,7 @@
 ## public libs
 ## local libs
 from utils import assertion
-from utils import util_tools as util
+from utils.util_str import tupleEvenStr
 ## local files
 from builder.basedata import BaseData
 
@@ -17,11 +17,5 @@ class Layer(BaseData):
         words (str, tuple): layer words
     """
     def __init__(self, name: str, words: (str, list, tuple)):
-        super().__init__(name,
-                (assertion.isTuple(util.tupleEvenStr(words)),
-                    ))
+        super().__init__(name, assertion.isTuple(tupleEvenStr(words)))
 
-    ## property
-    @property
-    def words(self) -> tuple:
-        return self.data[0]

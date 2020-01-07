@@ -23,7 +23,7 @@ class BlockTest(unittest.TestCase):
         pass
 
     def test_attributes(self):
-        attrs = ("acts",)
+        attrs = ("data",)
         act1 = Action("apple")
         act2 = Action("orange")
         data = [
@@ -38,3 +38,9 @@ class BlockTest(unittest.TestCase):
                     self.assertEqual(getattr(tmp, a), v)
         validatedTestingWithFail(self, "class attributes", _checkcode, data)
 
+    def test_inherited(self):
+        ac1, ac2 = Action("apple"), Action("orange")
+        tmp = Block("test", ac1)
+        self.assertEqual(tmp.data, (ac1,))
+        tmp1 = tmp.inherited(ac2)
+        self.assertEqual(tmp1.data, (ac2,))

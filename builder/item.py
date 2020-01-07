@@ -8,6 +8,7 @@ from utils import assertion
 from builder.basedata import BaseData
 
 
+## define class
 class Item(BaseData):
     """The data class of item.
 
@@ -15,12 +16,6 @@ class Item(BaseData):
         name (str): a item name
         note (str): 0. a note
     """
-    def __init__(self, name: str, note: str=""):
-        super().__init__(name,
-                (assertion.isStr(note),
-                    ))
+    def __init__(self, name: str, info: str="", note: str=""):
+        super().__init__(name, assertion.isStr(info), note=note)
 
-    ## property
-    @property
-    def note(self) -> str:
-        return self.data[0]

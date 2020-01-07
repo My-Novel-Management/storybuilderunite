@@ -8,6 +8,7 @@ from utils import assertion
 from builder.basedata import BaseData
 
 
+## define class
 class Stage(BaseData):
     """The data class of stage.
 
@@ -15,12 +16,5 @@ class Stage(BaseData):
         name (str): a stage name.
         note (str): 0. a note.
     """
-    def __init__(self, name: str, note: str=""):
-        super().__init__(name,
-                (assertion.isStr(note),))
-
-    ## property
-    @property
-    def note(self) -> str:
-        return self.data[0]
-
+    def __init__(self, name: str, info: str="", note: str=""):
+        super().__init__(name, assertion.isStr(info), note=note)

@@ -8,6 +8,7 @@ from typing import Any
 from utils import assertion
 from utils.util_str import isAlphabetsOnly
 ## local files
+from builder import __CONTINUED__
 from builder import ActType, TagType, MetaType
 from builder.action import Action
 from builder.day import Day
@@ -38,6 +39,10 @@ class Writer(object):
     @classmethod
     def getWho(cls) -> Writer:
         return Writer(Who())
+
+    @classmethod
+    def continuedAct(cls, *args, **kwargs) -> Action:
+        return Action(*args, act_type=ActType.META, tag_type=TagType.COMMAND, note=__CONTINUED__, **kwargs)
 
     ## method (basic)
     def do(self, *args, **kwargs) -> Action:
@@ -79,6 +84,9 @@ class Writer(object):
     def voice(self, *args, **kwargs) -> Action:
         return Action(*args, subject=self.src, act_type=ActType.VOICE, **kwargs)
 
+    def wear(self, *args, **kwargs) -> Action:
+        return Action(*args, subject=self.src, act_type=ActType.WEAR, **kwargs)
+
     ## tag
     def br(self) -> Action:
         return Action(act_type=ActType.TAG, tag_type=TagType.BR)
@@ -98,12 +106,12 @@ class Writer(object):
     ## meta
     def hasThat(self, *args, isScene: bool=False) -> Action:
         info = "scene" if isScene else ""
-        return Action(MetaData(MetaType.TEST_HAS_THAT, info=info), *args,
+        return Action(MetaData(MetaType.TEST_HAS_THAT, note=info), *args,
                 subject=self.src, act_type=ActType.META)
 
     def existsThat(self, *args, isScene: bool=False) -> Action:
         info = "scene" if isScene else ""
-        return Action(MetaData(MetaType.TEST_EXISTS_THAT, info=info),
+        return Action(MetaData(MetaType.TEST_EXISTS_THAT, note=info),
                 *args, subject=self.src, act_type=ActType.META)
 
     ## methods (utility)

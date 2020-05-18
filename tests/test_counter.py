@@ -26,7 +26,7 @@ class CounterTest(unittest.TestCase):
         printTestTitle(_FILENAME, "Counter class")
 
     def setUp(self):
-        self.taro = Person("太郎", "", 15, "male", "student", "me:俺")
+        self.taro = Person("太郎", "", 15, (1,1), "male", "student", "me:俺")
         self.basedata = Story("test", Chapter("c1", Episode("e1",
             Scene("s1", Action("apple", subject=self.taro)))))
 
@@ -40,6 +40,16 @@ class CounterTest(unittest.TestCase):
                 ]
         validatedTestingWithFail(self, "actions", lambda v,expect: self.assertEqual(
             Counter.actions(v), expect), data)
+
+    def test_actionsPerPerson(self):
+        data = [
+                (False, Story("test",Chapter("c1",Episode("e1",
+                    Scene("s1",Action("apple",subject=self.taro),Action("orange"))))),
+                    self.taro, 1),
+                ]
+        validatedTestingWithFail(self, "actionsPerPerson",
+                lambda v,p,expect: self.assertEqual(
+                    Counter.actionsPerPerson(v,p),expect), data)
 
     def test_actType(self):
         data = [
@@ -72,7 +82,7 @@ class CounterTest(unittest.TestCase):
 
     def test_descriptions(self):
         data = [
-                (False, self.basedata, 7),
+                (False, self.basedata, 6),
                 ]
         validatedTestingWithFail(self, "descriptions", lambda v,expect: self.assertEqual(
             Counter.descriptions(v), expect), data)
@@ -84,6 +94,17 @@ class CounterTest(unittest.TestCase):
                 ]
         validatedTestingWithFail(self, "kanjis", lambda v,expect: self.assertEqual(
             Counter.kanjis(v), expect), data)
+
+    def test_noteChars(self):
+        data = [
+                (False, Story("test",
+                    Chapter("c1",
+                        Episode("e1",
+                            Scene("s1", note="apple"), note="grape"), note="melon"), note="lemon"),
+                        15),
+                ]
+        validatedTestingWithFail(self, "noteChars", lambda v,expect: self.assertEqual(
+            Counter.noteChars(v), expect), data)
 
     def test_manupaperRows(self):
         data = [

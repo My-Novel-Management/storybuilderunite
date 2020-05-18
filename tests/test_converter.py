@@ -7,12 +7,14 @@ import unittest
 ## local files (test utils)
 from testutils import printTestTitle, validatedTestingWithFail
 ## local files
+from builder import ActType, MetaType
 from builder.action import Action
 from builder.block import Block
 from builder.chapter import Chapter
 from builder.converter import Converter
 from builder.episode import Episode
 from builder.extractor import Extractor
+from builder.metadata import MetaData
 from builder.person import Person
 from builder.scene import Scene
 from builder.story import Story
@@ -29,12 +31,27 @@ class ConverterTest(unittest.TestCase):
         printTestTitle(_FILENAME, "Converter class")
 
     def setUp(self):
-        self.taro = Person("Taro", "", 15, "male", "student", "me:俺")
-        self.hana = Person("Hana", "", 20, "female", "OL", "me:わたし")
+        self.taro = Person("Taro", "", 15, (1,1), "male", "student", "me:俺")
+        self.hana = Person("Hana", "", 20, (1,1), "female", "OL", "me:わたし")
 
     def test_attributes(self):
         tmp = Converter()
         self.assertIsInstance(tmp, Converter)
+
+    def test_sceneFromBlock(self):
+        ac0 = Action("man", subject=self.taro)
+        ac1, ac2, ac3 = Action("apple"), Action("orange"), Action("melon")
+        data = [
+                (False, Block("test", ac0, ac1),
+                    Scene("test", ac0, ac1, camera=self.taro)),
+                ]
+        def _checkcode(v, expect):
+            tmp = Converter.sceneFromBlock(v)
+            self.assertIsInstance(tmp, Scene)
+            self.assertEqual(tmp.title, expect.title)
+            self.assertEqual(tmp.camera, expect.camera)
+            self.assertEqual(tmp.data, expect.data)
+        validatedTestingWithFail(self, "sceneFromBlock", _checkcode, data)
 
     def test_srcExpandBlocks(self):
         ac1, ac2, ac3 = Action("apple"), Action("orange"), Action("melon")
@@ -44,12 +61,16 @@ class ConverterTest(unittest.TestCase):
                     Scene("s1", ac1, ac2)))),
                     (ac1, ac2)),
                 (False, Story("test", Chapter("c1", Episode("e1",
-                    Scene("s1", bk1, bk2)))),
-                    (ac1, ac2, ac3)),
+                    Scene("s1", bk2)))),
+                    (Action(MetaData(MetaType.BLOCK_START,title="B"),act_type=ActType.META), ac2, ac3, Action(MetaData(MetaType.BLOCK_END,title="B"),act_type=ActType.META))),
                 ]
         def _checkcode(v, expect):
             tmp = Extractor.actionsFrom(Converter.srcExpandBlocks(v))
-            self.assertEqual(tmp, expect)
+            for v, e in zip(tmp, expect):
+                if isinstance(v.data[0], MetaData):
+                    self.assertEqual(v.data[0].data, e.data[0].data)
+                else:
+                    self.assertEqual(v.data, e.data)
         validatedTestingWithFail(self, "srcExpandBlocks", _checkcode, data)
 
     def test_srcFilterByPriority(self):
@@ -76,16 +97,16 @@ class ConverterTest(unittest.TestCase):
             self.assertEqual(len(tmp.data), len(expect.data))
         validatedTestingWithFail(self, "srfFilterByPriority", _checkcode, data)
 
-    def test_srcReplacedPronouns(self):
+    def test_srcPronounsReplaced(self):
         data = [
                 (False, Story("test", Chapter("c1", Episode("e1",
                     Scene("s1", Action(subject=self.taro), Action("apple"))))),
                     [self.taro, self.taro]),
                 ]
         def _checkcode(v, expect):
-            tmp = Extractor.actionsFrom(Converter.srcReplacedPronouns(v))
+            tmp = Extractor.actionsFrom(Converter.srcPronounsReplaced(v))
             self.assertEqual([v.subject for v in tmp], expect)
-        validatedTestingWithFail(self, "srcReplacedPronouns", _checkcode, data)
+        validatedTestingWithFail(self, "srcPronounsReplaced", _checkcode, data)
 
     def test_srcReplacedTags(self):
         data = [
@@ -102,7 +123,7 @@ class ConverterTest(unittest.TestCase):
     def test_srcReducedByChapter(self):
         ch1, ch2 = Chapter("c1"), Chapter("c2")
         data = [
-                (False, Story("test", ch1, ch2), 0,2,
+                (False, Story("test", ch1, ch2), 0,1,
                     (ch1, ch2)),
                 (False, Story("test", ch1, ch2), 1,1,
                     (ch2,)),
@@ -117,7 +138,7 @@ class ConverterTest(unittest.TestCase):
     def test_srcReducedByEpisode(self):
         ep1, ep2 = Episode("e1"), Episode("e2")
         data = [
-                (False, Story("test", Chapter("c1",ep1), Chapter("c2",ep2)), 0,2,
+                (False, Story("test", Chapter("c1",ep1), Chapter("c2",ep2)), 0,1,
                     (ep1,ep2)),
                 (False, Story("test", Chapter("c1",ep1), Chapter("c2",ep2)), 1,1,
                     (ep2,)),

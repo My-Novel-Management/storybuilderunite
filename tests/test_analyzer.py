@@ -44,7 +44,7 @@ class AnalyzerTest(unittest.TestCase):
                 ]
         def _checkcode(v, wcls, expect):
             tmp = self.anal.collectionsWordClassByMecab(v)
-            self.assertEqual(tmp[wcls.name], expect)
+            self.assertEqual(tmp[wcls], expect)
         validatedTestingWithFail(self, "collectionsWordClassByMeCab", _checkcode, data)
 
     def test_verbs(self):
@@ -52,7 +52,7 @@ class AnalyzerTest(unittest.TestCase):
                 (False, "雨が降る夜",
                     ["降る"]),
                 (False, "雨が降る夜に出会う",
-                    ["降る", "出る"]),
+                    ["降る", "出会う"]),
                 (False, ("雨が降る", "夜に会う"),
                     ["降る", "会う"]),
                 ]

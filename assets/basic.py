@@ -29,17 +29,23 @@
 ASSET = {
         "PERSONS":(
         # Tag / 氏,名 / 歳 / 性別 / 職業 / 呼称 / 紹介
-        ("work_man", "男性会社員", "", 30, "male", "会社員", "me:俺"),
-        ("work_woman", "女性会社員", "", 30, "female", "会社員", "me:私"),
-        ("old_man", "老人", "", 70, "male", "無職", "me:儂"),
-        ("old_woman", "老婦人", "", 70, "female", "無職", "me:私"),
-        ("school_boy", "男子小学生", "", 10, "male", "小学生", "me:ぼく"),
-        ("school_girl", "女子小学生", "", 10, "female", "小学生", "me:わたし"),
-        ("student_boy", "男子学生", "", 15, "male", "学生", "me:僕"),
-        ("student_girl", "女子学生", "", 15, "female", "学生", "me:私"),
+        ("work_man", "男性会社員", "", 30, (1,1),"male", "会社員", "me:俺"),
+        ("work_woman", "女性会社員", "", 30, (1,1), "female", "会社員", "me:私"),
+        ("old_man", "老人", "", 70, (1,1), "male", "無職", "me:儂"),
+        ("old_woman", "老婦人", "", 70, (1,1), "female", "無職", "me:私"),
+        ("school_boy", "男子小学生", "", 10, (1,1), "male", "小学生", "me:ぼく"),
+        ("school_girl", "女子小学生", "", 10, (1,1), "female", "小学生", "me:わたし"),
+        ("student_boy", "男子学生", "", 15, (1,1), "male", "学生", "me:僕"),
+        ("student_girl", "女子学生", "", 15, (1,1), "female", "学生", "me:私"),
+        ),
+        "AREAS":(
+        # Tag / 名前 / x,y / 備考
+        ("Drive", "乗り物", 1,1, "乗り物用"),
+        ("Tokyo", "東京", 100,100),
+        ("Japan", "日本", 10,10),
         ),
         "STAGES":(
-        # Tag / 名前 / 紹介
+        # Tag / 名前 / 場所 / 紹介
         ## 一般施設
         ("apart", "アパート"),
         ("manshion", "マンション"),
@@ -92,6 +98,7 @@ ASSET = {
         ("earlymorning", "早朝", 6, 0),
         ("morning", "朝", 8, 0),
         ("midmorning", "午前", 10, 0),
+        ("beforenoon", "昼前", 11, 0),
         ("noon", "正午", 12, 0),
         ("afternoon", "午後", 14, 0),
         ("afterschool", "放課後", 16, 0),
@@ -102,6 +109,22 @@ ASSET = {
         ),
         "ITEMS":(
         # Tag / 名前 / 紹介
+        ("ceiling", "天井"),
+        ("door", "ドア"),
+        ("exterior", "外装"),
+        ("floor", "床"),
+        ("gate", "門"),
+        ("inside", "中の様子"),
+        ("interior", "内装"),
+        ("light", "電灯"),
+        ("mountain", "山"),
+        ("outside", "外の様子"),
+        ("pillar", "柱"),
+        ("road", "道"),
+        ("sky", "空"),
+        ("tree", "木"),
+        ("wall", "壁"),
+        ("window", "窓"),
         ),
         "WORDS":(
         # Tag / 名前 / 紹介

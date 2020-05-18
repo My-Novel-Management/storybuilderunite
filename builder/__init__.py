@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-__VERSION__ = "0.0.1"
+__VERSION__ = "0.4.2"
 __TITLE__ = "StoryBuilder"
 __DESC__ = "Tool for building a story"
 
@@ -31,8 +31,10 @@ __BASE_ROW__ = 20
 
 __DEF_FILENAME__ = "story"
 
+__CONTINUED__ = "__continued__"
+
 __ASSET_ELEMENTS__ = (
-        "PERSONS", "STAGES", "DAYS", "TIMES", "ITEMS", "WORDS", "RUBIS", "LAYERS",
+        "PERSONS", "AREAS", "STAGES", "DAYS", "TIMES", "ITEMS", "WORDS", "RUBIS", "LAYERS",
         )
 
 __FORMAT_DEFAULT__ = (0, 0, 0, 0)
@@ -43,6 +45,29 @@ __FORMAT_PHONE__ = (1, 1, 1, 1)
 __DEF_YEAR__ = 2020
 __DEF_MON__ = 1
 __DEF_DAY__ = 1
+
+__WALK_STAGE__ = [
+        "路地", "路上",
+        "歩道",
+        "交差点", "横断歩道",
+        "山道",
+        "街道",
+        ]
+__DRIVE_STAGE__ = [
+        "車", "車・内",
+        "バス", "バス・内",
+        "タクシー", "タクシー・内",
+        "電車", "電車・内",
+        "列車", "列車・内",
+        "新幹線", "新幹線・内",
+        "自転車",
+        "バイク",
+        "船", "船・内",
+        "フェリー", "フェリー・内",
+        "飛行機", "飛行機・内",
+        "自家用ジェット", "自家用ジェット・内",
+        "ヘリコプター", "ヘリコプター・内",
+        ]
 
 ## enums
 class ActType(Enum):
@@ -58,6 +83,7 @@ class ActType(Enum):
     # effect
     HEAR = auto() # sound effect
     LOOK = auto() # paint object
+    WEAR = auto() # put texture
     # talk action
     TALK = auto() # dialogue
     THINK = auto() # monologue
@@ -67,12 +93,33 @@ class ActType(Enum):
     TAG = auto() # tag
     META = auto() # meta
 
+    def emoji(self) -> str:
+        return {
+                ActType.ACT: "↓",
+                ActType.BE: "∃",
+                ActType.COME: "→",
+                ActType.DESTROY: "壊",
+                ActType.DISCARD: "捨",
+                ActType.EXPLAIN: "※",
+                ActType.GO: "←",
+                ActType.HAVE: "∈",
+                ActType.HEAR: "♪",
+                ActType.LOOK: "■",
+                ActType.META: "∇",
+                ActType.TAG: "🔖",
+                ActType.TALK: "💬",
+                ActType.THINK: "😌",
+                ActType.VOICE: "📞",
+                ActType.WEAR: "👕",
+                }[self]
+
 class DataType(Enum):
     NONE = auto()
     ACTION = auto() # action
     HEAD = auto() # sceneより上位のcontainer
     TITLE = auto() # title
     DATA_STR = auto()
+    DATA_LIST = auto()
     DATA_DICT = auto()
     STORY_TITLE = auto()
     CHAPTER_TITLE = auto()
@@ -88,17 +135,25 @@ class DataType(Enum):
     MONOLOGUE = auto()
     NARRATION = auto()
     VOICE = auto()
+    META = auto()
+    COMMAND = auto() # 特殊なもので利用。方式の切り替え等
 
 class MetaType(Enum):
     NONE = auto()
     INFO = auto()
     TEST_EXISTS_THAT = auto()       # A subejct exists (in scene)
     TEST_HAS_THAT = auto()          # the subject has A item (object)
+    BLOCK_START = auto()
+    BLOCK_END = auto()
+    EVENT_START = auto()
+    EVENT_POINT = auto()
+    EVENT_END = auto()
 
 class TagType(Enum):
     NONE = auto()
     BR = auto() # break line
     COMMENT = auto() # comment
+    COMMAND = auto() # special command
     OUTLINE = auto() # outline
     HR = auto() # horizontal line
     SYMBOL = auto() # symbol mark
@@ -117,5 +172,24 @@ class WordClasses(Enum):
     PREFIX = "接頭詞"
     OTHER = "その他"
 
+    def convVolume(self) -> int:
+        return {
+                WordClasses.ADJECTIVE: 1,
+                WordClasses.ADVERB: 1,
+                WordClasses.AUXVERB: 0,
+                WordClasses.CONJUCTION: 0,
+                WordClasses.INTERJECTION: 1,
+                WordClasses.MARK: 0,
+                WordClasses.NOUN: 10,
+                WordClasses.OTHER: 0,
+                WordClasses.PARTICLE: 0,
+                WordClasses.PREFIX: 0,
+                WordClasses.VERB: 3,
+                }[self]
+
+## named tuple
 ConteData = namedtuple("ConteData",
-                        ("type", "dialogue", "subject", "objects", "content", "count", "note"))
+        ("type", "dialogue", "subject", "objects", "content", "count", "note"))
+
+History = namedtuple("History",
+        ("date", "content", "note"))

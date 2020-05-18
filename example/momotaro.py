@@ -11,12 +11,13 @@ sys.path.append('builder')
 from builder.world import World
 from builder.writer import Writer
 ## local files
-from assets import basic
-from config import DAYS, ITEMS, LAYERS, PERSONS, RUBIS, STAGES, TIMES, WORDS
+from assets import basic, accessory
+from config import AREAS, DAYS, ITEMS, LAYERS, PERSONS, RUBIS, STAGES, TIMES, WORDS
 
 
 W = Writer
 _ = Writer.getWho()
+d = Writer.continuedAct
 
 ################################################################
 #
@@ -47,15 +48,23 @@ _ = Writer.getWho()
 def sc_get_peach(w: World):
     gma = W(w.granma)
     return w.scene("桃を拾う",
+            w.comment("序盤。おばあさんが桃を拾う"),
+            w.eventStart("桃太郎誕生"),
             gma.be("あるところにおじいさんとおばあさんがいました", "&"),
             gma.explain("おじいさんは山へ芝刈りに、おばあさんは川へ洗濯に出かけました"),
+            gma.wear("渋染の着物にほつれた草履", "ぼさぼさの白髪"),
+            gma.wear("目は小豆のよう"),
+            gma.wear("肌はシミが目立つ"),
             gma.come("洗濯物を籠に入れ、河原にやってきた$Sでしたが、", "&"),
-            gma.do("川の上流からどんぶらこと大きな桃が流れてくるのを見つけました"),
+            gma.do("川の上流からどんぶらこと大きな桃が流れてくるのを見つけました。それを見て思います"),
+            d("じっと立って桃を見つめて"),
             gma.talk("あれまあ、なんて大きな桃なんでしょう"),
-            gma.think("拾って帰っておじいさんと一緒に食べようかしらね"),
+            d("おじいさんが好きそうだ"),
+            gma.think("拾って帰って、おじいさんと一緒に食べようかしらね", "#桃をゲット"),
             gma.have(w.peach, "そう考え、何とか木の棒を使ってこちらに引き寄せ、ひと抱えもある桃を手に入れました"),
             gma.go("それを籠に入れ、家に帰りました"),
             camera=w.granma,
+            area=w.Vila,
             stage=w.on_river,
             day=w.in_birth, time=w.at_midmorning,
             )
@@ -64,18 +73,21 @@ def sc_birth_taro(w: World):
     gma, gpa = W(w.granma), W(w.granpa)
     taro = W(w.taro)
     return w.scene("誕生",
+            w.br(),
             gma.be("#居間に座っていた"),
             gpa.be(),
             gma.talk("おじいさん見ておくれよ、この大きな桃"),
             gpa.talk("ありゃまあ、なんてぇ大きな桃だよ",
                 "早速$meが切ってやろう"),
             gpa.have(w.blade, "ナタを手にした$Sは大きく振り上げると、一気に桃に向かってブスリ、とやりました"),
-            taro.be("#誕生する", "桃はパカーと真っ二つに割れて、中から玉のような赤子が出てきました"),
-            gma.talk("おじいさん、こりゃあ人の子だ",
-                "子どもがいない$meに神様が授けて下さったんだよぉ"),
+            taro.be("#$S誕生する", "桃はパカーと真っ二つに割れて、中から玉のような赤子が出てきました"),
+            gma.wear("たすき掛け"),
+            gma.talk("おじいさん、こりゃあ人の子だ！？　なんてことだ！"),
+            _.talk("子どもがいない$meに神様が授けて下さったんだよぉ"),
             gpa.talk("よし！", "$taroと名付けよう",
                 "今日からお前は$taroだ"),
             taro.explain("こうして$Sは生まれました"),
+            w.eventEnd("桃太郎誕生"),
             stage=w.on_home,
             time=w.at_noon,
             )
@@ -83,7 +95,9 @@ def sc_birth_taro(w: World):
 def sc_voyage(w: World):
     taro = W(w.taro)
     gma, gpa = W(w.granma), W(w.granpa)
+    dango = W(w.dango)
     return w.scene("旅立ち",
+            w.symbol("◆"),
             taro.be(),
             taro.explain("$Sはすくすくと育ち、あっという間に大きく逞しく成長しました"),
             taro.do("ある日、村人から鬼の悪行を聞いた$Sは考えました"),
@@ -98,32 +112,37 @@ def sc_voyage(w: World):
             gpa.have(w.katana, "そう言うと$Sは$katanaを持ってきて、$taroに渡します"),
             gpa.talk("これをお持ちなさい", "かつて鬼を切ったと言われる名刀だ"),
             taro.talk("こんな大切なものを", "$meは絶対に鬼をやっつけてきます"),
-            gma.talk("それじゃあ$meは$dangoでも作ろうかね"),
+            gma.talk("それじゃあ$meは$dangoでも作ろうかね", w.dango),
             taro.talk("ありがとうございます"),
-            taro.have(w.dango),
+            gma.do("団子を作って", w.dango),
+            taro.have(w.dango, "おばあさんからは$dangoを貰った"),
+            dango.look("きな粉がまぶされ、美味しそうだ"),
             taro.explain("こうして$Sは翌朝早くに旅立っていきました"),
+            w.eventStart("鬼退治"),
             taro.go(),
             camera=w.taro,
-            stage=w.on_home,
             day=w.in_voyage, time=w.at_morning,
             )
 
-def sc_ally(w: World):
+def mo_ally(w: World):
     taro = W(w.taro)
     dog, monkey, bird = W(w.dog), W(w.monkey), W(w.bird)
-    return w.scene("家来",
+    return (w.scene("家来1",
             taro.hasThat(w.dango),
-            taro.come("村を出た$Sは街道を歩いていた"),
-            dog.be("すると前方で一匹の犬がうずくまっている"),
-            taro.talk("どうしたんだ？"),
-            dog.talk("お腹が空いて動けないのです"),
-            taro.do("そこで$Sは持っていた$dangoを犬にやった"),
-            dog.have(w.dango),
+            w.load("犬を仲間に"),
             dog.talk("助かりました", "ところで$taroさんはどこに行くのですか？"),
             taro.talk("鬼を退治しに行くところなんだ"),
             dog.talk("それなら$meがお供しましょう", "鬼はこの牙が苦手と言います"),
-            dog.explain("こうして犬は$CSの家来となりました"),
-            taro.do("またしばらく歩いていると、今度は猿が木の上から話しかけます"),
+            _.explain("こうして犬は$CSの家来となりました"),
+            w.eventPoint("鬼退治", "犬を仲間にする"),
+            area=w.Land,
+            stage=w.on_street,
+            day=w.in_voyage.nextDay(),
+            time=w.at_afternoon,
+            ),
+            w.scene("家来2",
+            taro.hear("誰かの話しかける声"),
+            taro.do("またしばらく歩いていきます。今度は猿が木の上から話しかけます"),
             monkey.be("#木の上に"),
             monkey.talk("おい、なんか美味そうなもん持ってるな"),
             taro.talk("ああ、これか", "おばあさんが作ってくれた$dangoだ"),
@@ -136,16 +155,23 @@ def sc_ally(w: World):
             taro.talk("それなら$meと一緒に鬼退治に来てくれませんか？"),
             monkey.have(w.dango, "二つ返事で頷くと、$Sは$dangoを貰って一気に口に放り込んだ"),
             taro.explain("こうして犬に続き猿も家来にした$Sだったが、その行く手を阻むように川が横たわっていた"),
+            time=w.at_afternoon.elapsedMin(30),
+            ),
+            w.scene("家来3",
             taro.talk("困ったなあ"),
             bird.come("そこに$Sが優雅に翼を広げてやってくる"),
             bird.talk("おや、噂の$taroさんじゃありませんか", "どうかされましたか？"),
             taro.talk("いや、実は川が渡れずに困っていたんだ"),
             bird.talk("それなら$meが仲間たちを呼んで渡してあげましょう"),
-            bird.do("そう言うと$Sはピーと鳴き、仲間を沢山集め、$taroたちを向こう岸へと運んでくれた"),
+            _.do("そう言うと$Sはピーと鳴き、仲間を沢山集め、$taroたちを向こう岸へと運んでくれた"),
             taro.do("$Sはお礼にと$dangoを渡したが、$birdは鬼退治に行くという話を聞き、一緒に行ってくれることになった"),
             taro.explain("$Sは家来として犬、猿、雉とそれぞれ引き連れ、$on_islandを目指しました"),
-            stage=w.on_street,
-            time=w.at_afternoon,
+            time=w.at_afternoon.elapsedHour(2),
+            ),
+            w.scene("船で",
+                taro.explain("船で$on_islandを目指した"),
+                stage=w.on_ship,
+            ),
             )
 
 def sc_island(w: World):
@@ -173,30 +199,66 @@ def ep_birth_momotaro(w: World):
     return w.episode("$taro誕生",
             sc_get_peach(w),
             sc_birth_taro(w),
-            note="流れてきた大きな桃には赤子が入っていた",
+            note="流れてきた大きな桃には赤子（$taro）が入っていた",
+            )
+
+def ep_ally(w: World):
+    return w.episode("味方",
+            sc_voyage(w),
+            *mo_ally(w),
             )
 
 def ep_buster_daemon(w: World):
     return w.episode("$w_daemon退治",
-            sc_voyage(w),
-            sc_ally(w),
             sc_island(w),
             note="道中で家来を手に入れて、鬼退治する",
             )
 
 ## persons
 def set_persons(w: World):
-    w.setTexture("taro",
-                ["髪", "黒くて長い",
-                    "体躯", "すらりと長身"])
+    w.setTexture("taro", "黒くて長い髪、すらりと長身")
+
+def life_taro(w: World):
+    taro = W(w.taro)
+    return w.lifenote("$taroの成長",w.taro,
+                taro.do("よく食べてよく眠る子だった"),
+                taro.do("朝起きたらいきなり走り回り、畑仕事を手伝う"),
+                taro.do("ご飯は三合をぺろりと平らげ、おじいさんおばあさんを驚かせた"),
+                )
+
+def hist_taro(w: World):
+    return w.createHistories(
+            (1, "猪に勝つ"),
+            (5, "相撲で負けなし"),
+            )
+
+def hist_granma(w: World):
+    return w.createHistories(
+            ("50:5", "おじいさんと再婚"),
+            ("0100-05-05", "最初の結婚をする"),
+            (74, "桃太郎を授かる"),
+            )
 
 ## stages
 def set_stages(w: World):
-    w.setTexture("on_home",
-            ["床", "板が貼ってあるがところどころ割れている",
-                "屋根", "茅葺き",
-                "囲炉裏", "部屋の中央にある"])
+    w.setTexture("on_home", "板張りの床、ところどころ割れている")
+
 ## items
+
+## block
+def bk_dog(w: World):
+    taro, dog = W(w.taro), W(w.dog)
+    return w.block("犬を仲間に",
+            taro.come("村を出た$Sは街道を歩いていた"),
+            dog.be("すると前方で一匹の犬がうずくまっている"),
+            taro.talk("どうしたんだ？"),
+            dog.talk("お腹が空いて動けないのです"),
+            taro.do("そこで$Sは持っていた$dangoを、犬にやった"),
+            dog.have(w.dango),
+            taro.explain("犬は実に美味しそうにその$dangoを食べていた。",
+                "それはそのはずで、村でも一番の美味さだと$taroは思っている。",
+                "最初からその魔力に犬が魅せられるのは分かりきっていたのだ"),
+            )
 
 ## main
 def ch_main(w: World):
@@ -204,6 +266,7 @@ def ch_main(w: World):
     #   create chapters and set episodes
     return w.chapter("main",
             ep_birth_momotaro(w),
+            ep_ally(w),
             ep_buster_daemon(w),
             )
 
@@ -215,13 +278,28 @@ def create_world():
     w.setCommonData()
     #   set base asset
     w.setAssets(basic.ASSET)
+    w.setAssets(accessory.ASSET)
     #   set DB (user)
     w.buildDB(PERSONS,
-            STAGES, ITEMS, DAYS, TIMES, WORDS,
+            AREAS, STAGES, DAYS, TIMES, ITEMS, WORDS,
             RUBIS, LAYERS)
+    #   set base year
+    w.setBaseDate(113)
+    w.setBaseArea("Zero")
     #   set textures
     set_persons(w)
     set_stages(w)
+    #   set blocks
+    w.entryBlock(bk_dog(w),)
+    #   set history
+    w.entryHistory(w.taro, *hist_taro(w))
+    w.entryHistory(w.granma, *hist_granma(w))
+    #   set lifenotes
+    w.entryLifeNote(
+            life_taro(w),
+            )
+    #   set outline
+    w.setOutline("桃太郎が鬼退治をする")
     return w
 
 def main(): # pragma: no cover

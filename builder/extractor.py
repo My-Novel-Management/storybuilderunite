@@ -8,7 +8,9 @@ from typing import Any, Optional, Tuple, Union
 from utils import assertion
 from utils.util_str import containsWordsIn
 ## local files
+from builder import ActType, TagType
 from builder.action import Action
+from builder.area import Area
 from builder.block import Block
 from builder.chapter import Chapter
 from builder.day import Day
@@ -74,6 +76,14 @@ class Extractor(object):
 
     ## methods (data)
     @classmethod
+    def areasFrom(cls, src: StoryLike) -> Tuple[Area, ...]:
+        return tuple([v.area for v in cls.scenesFrom(src)]) + cls._someObjectsFrom(src, Area)
+
+    @classmethod
+    def brTagsFrom(cls, src: StoryLike) -> Tuple[str, ...]:
+        return tuple(v.note for v in cls.tagsFrom(src) if v.tag_type is TagType.BR)
+
+    @classmethod
     def daysFrom(cls, src: StoryLike) -> Tuple[Day, ...]:
         return cls._someObjectsFrom(src, Day)
 
@@ -90,6 +100,22 @@ class Extractor(object):
         return cls._someObjectsFrom(src, MetaData)
 
     @classmethod
+    def notesOfStory(cls, src: Story) -> tuple:
+        return (cls.storyFrom(src).note,)
+
+    @classmethod
+    def notesOfChapters(cls, src: StoryLike) -> tuple:
+        return tuple(v.note for v in cls.chaptersFrom(src))
+
+    @classmethod
+    def notesOfEpisodes(cls, src: StoryLike) -> tuple:
+        return tuple(v.note for v in cls.episodesFrom(src))
+
+    @classmethod
+    def notesOfScenes(cls, src: StoryLike) -> tuple:
+        return tuple(v.note for v in cls.scenesFrom(src))
+
+    @classmethod
     def objectsFrom(cls, src: StoryLike) -> Tuple[U_Subjects, ...]:
         return cls._someObjectsFrom(src,
                 (Person, Stage, Day, Time, Item, Word))
@@ -103,6 +129,7 @@ class Extractor(object):
         persons = cls.personsFrom(src)
         subjects = cls.subjectsWithoutWhoFrom(src)
         return tuple(set(persons) | set(subjects))
+
     @classmethod
     def stagesFrom(cls, src: StoryLike) -> Tuple[Stage, ...]:
         return cls._someObjectsFrom(src, Stage)
@@ -120,8 +147,32 @@ class Extractor(object):
         return tuple(v.subject for v in cls.actionsFrom(src) if not isinstance(v.subject, Who))
 
     @classmethod
+    def symbolesFrom(cls, src: StoryLike) -> Tuple[str, ...]:
+        return tuple(v.note for v in cls.tagsFrom(src) if v.tag_type is TagType.SYMBOL)
+
+    @classmethod
+    def tagsFrom(cls, src: StoryLike) -> Tuple[Action, ...]:
+        return tuple(v for v in cls.actionsFrom(src) if v.act_type is ActType.TAG)
+
+    @classmethod
     def timesFrom(cls, src: StoryLike) -> Tuple[Time, ...]:
         return cls._someObjectsFrom(src, Time)
+
+    @classmethod
+    def titlesOfStory(cls, src: StoryLike) -> tuple:
+        return (cls.storyFrom(src).title,)
+
+    @classmethod
+    def titlesOfChapters(cls, src: StoryLike) -> tuple:
+        return tuple(v.title for v in cls.chaptersFrom(src))
+
+    @classmethod
+    def titlesOfEpisodes(cls, src: StoryLike) -> tuple:
+        return tuple(v.title for v in cls.episodesFrom(src))
+
+    @classmethod
+    def titlesOfScenes(cls, src: StoryLike) -> tuple:
+        return tuple(v.title for v in cls.scenesFrom(src))
 
     @classmethod
     def wordsFrom(cls, src: StoryLike) -> Tuple[Word, ...]:

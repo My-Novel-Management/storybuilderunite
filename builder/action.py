@@ -85,12 +85,14 @@ class Action(BaseContainer):
                     tmp.append(Then())
                 elif v.startswith('#'):
                     ## NOTE: current info only
-                    tmp.append(MetaData(MetaType.INFO, v.replace('#', '＃', 1)))
+                    tmp.append(MetaData(MetaType.INFO, note=v.replace('#', '＃', 1)))
                 else:
                     tmp.append(v)
             elif isinstance(v, AllSubjects):
                 tmp.append(v)
             elif isinstance(v, MetaData):
+                tmp.append(v)
+            elif isinstance(v, Then):
                 tmp.append(v)
         return tuple(tmp)
 

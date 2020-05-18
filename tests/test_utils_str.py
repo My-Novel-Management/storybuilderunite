@@ -97,6 +97,11 @@ class MethodsTest(unittest.TestCase):
     def test_strDuplicatedChopped(self):
         data = [
                 (False, "てすと。。", "てすと。"),
+                (False, "てすと。、", "てすと。"),
+                (False, "てすと！」", "てすと！」"),
+                (False, "てすと！？』", "てすと！？』"),
+                (False, "てすと！？", "てすと！？"),
+                (False, "てすと！？　だぞ！", "てすと！？　だぞ！"),
                 ]
         validatedTestingWithFail(self, "strDuplicatedChopped",
                 lambda v, expect: self.assertEqual(

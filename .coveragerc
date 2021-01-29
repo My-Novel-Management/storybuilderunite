@@ -1,9 +1,9 @@
 # .coveragerc to control coverage.py
 [run]
 source =
+    analyzer
     builder
-    example
-    utils
+    examples
 omit =
     # projects
     old_*
